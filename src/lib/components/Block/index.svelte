@@ -16,12 +16,15 @@
 {:else if block.__typename == 'ImageRecord' && isBlock(node)}
 	{#if block.image.responsiveImage.height / block.image.responsiveImage.width > 1}
 		<div
-			class="spacer"
-			style:aspect-ratio={block.image.responsiveImage.width / block.image.responsiveImage.height}
-			style:height="500px"
-			style:position="relative"
+			class="spacer compact-media-preview"
+			style:background-image={`url(${block.image.responsiveImage.base64})`}
 		>
-			<Image data={block.image.responsiveImage} layout="fill" />
+			<div
+				class="compact-media-preview__spacer"
+				style:aspect-ratio={block.image.responsiveImage.width / block.image.responsiveImage.height}
+			>
+				<Image data={block.image.responsiveImage} layout="fill" />
+			</div>
 		</div>
 	{:else}
 		<div class="spacer"><Image data={block.image.responsiveImage} /></div>
@@ -33,5 +36,28 @@
 <style>
 	.spacer {
 		margin: var(--double-space) 0;
+	}
+
+	.compact-media-preview {
+		background-size: cover;
+		background-position: center;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 10px;
+		border-radius: 5px;
+	}
+
+	.compact-media-preview__spacer {
+		height: 500px;
+		max-height: 55vh;
+		position: relative;
+		box-shadow:
+			0px 0px 1.8px rgba(0, 0, 0, 0.07),
+			0px 0px 4.3px rgba(0, 0, 0, 0.101),
+			0px 0px 8px rgba(0, 0, 0, 0.125),
+			0px 0px 14.3px rgba(0, 0, 0, 0.149),
+			0px 0px 26.7px rgba(0, 0, 0, 0.18),
+			0px 0px 64px rgba(0, 0, 0, 0.25);
 	}
 </style>
