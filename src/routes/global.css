@@ -3,7 +3,8 @@
 :root {
 	--font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
 		'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
-	--font-family--mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+	--font-family--mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, 'Roboto Mono', Courier,
+		monospace;
 
 	--font-size-base: 11px;
 	--font-size-xx-small: 1.1rem;
