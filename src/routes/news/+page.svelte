@@ -7,14 +7,14 @@
 </script>
 
 <svelte:head>
-	<title>Feeds</title>
+	<title>News</title>
 	<meta name="description" content="News from my favourite websites" />
 
-	<meta property="og:title" content="Feeds" />
+	<meta property="og:title" content="News" />
 	<meta property="og:site_name" content="squeaki.sh" />
 	<meta property="og:description" content="News from my favourite websites" />
 
-	<meta name="twitter:title" content="Feeds" />
+	<meta name="twitter:title" content="News" />
 	<meta name="twitter:description" content="News from my favourite websites" />
 	<meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
