@@ -18,7 +18,7 @@
 	<div class="overlay" style={`background-image: url(${faviconUrl})`} />
 	<div class="inner">
 		<header>
-			<img src={faviconUrl} alt="favicon" />
+			<img src={faviconUrl} alt="favicon" width="16" />
 			{source.title}
 		</header>
 		<h3>{item.title}</h3>
@@ -31,16 +31,16 @@
 				: upperFirst(formatRelative(item.date, new Date()))}</time
 		>
 	</div>
-	<a href={item.url} target="_blank">Read article</a>
+	<a class="borders" href={item.url} target="_blank">Read article</a>
 </article>
 
 <style>
 	article {
 		margin: var(--base-space) 0;
 		border-radius: 5px;
-		position: relative;
 		transition: all 0.2s ease-in-out;
 		overflow: hidden;
+		position: relative;
 
 		&:hover {
 			box-shadow:
@@ -55,6 +55,21 @@
 		}
 	}
 
+	a.borders {
+		position: absolute;
+		inset: 0;
+		border: 3px solid var(--color-txt--subtle);
+		border-radius: 5px;
+		text-decoration: none;
+		color: inherit;
+		display: block;
+		text-indent: -9999px;
+
+		&:visited {
+			border-color: rgb(var(--rgb-background));
+		}
+	}
+
 	.overlay {
 		position: absolute;
 		inset: 0;
@@ -66,7 +81,7 @@
 
 	.inner {
 		padding: var(--base-space);
-		backdrop-filter: sepia(0.1) blur(20px);
+		backdrop-filter: blur(20px);
 	}
 
 	header {
@@ -78,20 +93,6 @@
 	h3 {
 		font-size: var(--font-size-large);
 		margin: 0 0 var(--quarter-space);
-	}
-
-	a {
-		position: absolute;
-		inset: 0;
-		text-indent: -9999px;
-		z-index: 1;
-		background: transparent;
-		border: 3px solid var(--color-txt--subtle);
-		border-radius: 5px;
-
-		&:visited {
-			border-color: rgb(var(--rgb-background));
-		}
 	}
 
 	.description {

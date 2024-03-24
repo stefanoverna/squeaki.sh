@@ -30,19 +30,19 @@
 		border-radius: 5px;
 		top: 0;
 		box-shadow:
-			0px 0.5px 1.3px rgba(var(--rgb-ink), 0.024),
-			0px 1.5px 3.6px rgba(var(--rgb-ink), 0.035),
-			0px 3.6px 8.7px rgba(var(--rgb-ink), 0.046),
-			0px 12px 29px rgba(var(--rgb-ink), 0.07);
+			0px 0.5px 1.3px rgba(0, 0, 0, 0.024),
+			0px 1.5px 3.6px rgba(0, 0, 0, 0.035),
+			0px 3.6px 8.7px rgba(0, 0, 0, 0.046),
+			0px 12px 29px rgba(0, 0, 0, 0.07);
 		transition: all 0.2s ease-in-out;
 
 		&:hover {
 			top: -5px;
 			box-shadow:
-				0px 1.4px 1.3px rgba(var(--rgb-ink), 0.021),
-				0px 3.8px 3.6px rgba(var(--rgb-ink), 0.03),
-				0px 9px 8.7px rgba(var(--rgb-ink), 0.039),
-				0px 30px 29px rgba(var(--rgb-ink), 0.06);
+				0px 1.4px 1.3px rgba(0, 0, 0, 0.021),
+				0px 3.8px 3.6px rgba(0, 0, 0, 0.03),
+				0px 9px 8.7px rgba(0, 0, 0, 0.039),
+				0px 30px 29px rgba(0, 0, 0, 0.06);
 		}
 	}
 
