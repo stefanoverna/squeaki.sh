@@ -8,7 +8,7 @@ import { Parser } from 'pulse-feed-parser';
 import striptags from 'striptags';
 import type { PageServerLoad } from './$types';
 
-// export const prerender = true;
+export const prerender = true;
 export const csr = false;
 
 export const load: PageServerLoad = async () => {
