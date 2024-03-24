@@ -62,7 +62,7 @@
 
 	.inner {
 		padding: var(--base-space);
-		backdrop-filter: sepia(0.1) blur(50px);
+		backdrop-filter: sepia(0.1) blur(20px);
 	}
 
 	header {
