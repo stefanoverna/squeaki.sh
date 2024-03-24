@@ -52,7 +52,7 @@
 		}
 	}
 
-	@media (min-width: 40em) {
+	@media (min-width: 40rem) {
 		article {
 			padding: var(--double-space);
 		}
