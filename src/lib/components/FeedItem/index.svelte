@@ -62,6 +62,10 @@
 		opacity: 0.1;
 		background-position: 50% 50%;
 		background-size: cover;
+
+		@media (prefers-color-scheme: dark) {
+			display: none;
+		}
 	}
 
 	.inner {
