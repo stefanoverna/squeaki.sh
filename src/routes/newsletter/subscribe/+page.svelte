@@ -43,12 +43,12 @@
 		padding: var(--base-space);
 		text-align: center;
 		box-shadow:
-			1.2px 1.7px 4px rgba(0, 0, 0, 0.014),
-			2.8px 4.1px 9.6px rgba(0, 0, 0, 0.02),
-			5.3px 7.8px 18.2px rgba(0, 0, 0, 0.025),
-			9.4px 13.8px 32.4px rgba(0, 0, 0, 0.03),
-			17.5px 25.9px 60.6px rgba(0, 0, 0, 0.036),
-			42px 62px 145px rgba(0, 0, 0, 0.05);
+			1.2px 1.7px 4px rgba(var(--rgb-ink), 0.014),
+			2.8px 4.1px 9.6px rgba(var(--rgb-ink), 0.02),
+			5.3px 7.8px 18.2px rgba(var(--rgb-ink), 0.025),
+			9.4px 13.8px 32.4px rgba(var(--rgb-ink), 0.03),
+			17.5px 25.9px 60.6px rgba(var(--rgb-ink), 0.036),
+			42px 62px 145px rgba(var(--rgb-ink), 0.05);
 	}
 
 	@media (prefers-color-scheme: dark) {

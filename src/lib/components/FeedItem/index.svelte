@@ -44,10 +44,10 @@
 
 		&:hover {
 			box-shadow:
-				0px 0px 3.6px rgba(0, 0, 0, 0.014),
-				0px 0px 10px rgba(0, 0, 0, 0.02),
-				0px 0px 24.1px rgba(0, 0, 0, 0.026),
-				0px 0px 80px rgba(0, 0, 0, 0.04);
+				0px 0px 3.6px rgba(var(--rgb-ink), 0.014),
+				0px 0px 10px rgba(var(--rgb-ink), 0.02),
+				0px 0px 24.1px rgba(var(--rgb-ink), 0.026),
+				0px 0px 80px rgba(var(--rgb-ink), 0.04);
 		}
 
 		@media (min-width: 64rem) {
@@ -62,10 +62,6 @@
 		opacity: 0.1;
 		background-position: 50% 50%;
 		background-size: cover;
-
-		@media (prefers-color-scheme: dark) {
-			display: none;
-		}
 	}
 
 	.inner {
@@ -90,7 +86,7 @@
 		text-indent: -9999px;
 		z-index: 1;
 		background: transparent;
-		border: 3px solid var(--color-border);
+		border: 3px solid var(--color-txt--subtle);
 		border-radius: 5px;
 
 		&:visited {

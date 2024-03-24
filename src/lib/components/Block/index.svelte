@@ -53,11 +53,11 @@
 		max-height: 55vh;
 		position: relative;
 		box-shadow:
-			0px 0px 1.8px rgba(0, 0, 0, 0.07),
-			0px 0px 4.3px rgba(0, 0, 0, 0.101),
-			0px 0px 8px rgba(0, 0, 0, 0.125),
-			0px 0px 14.3px rgba(0, 0, 0, 0.149),
-			0px 0px 26.7px rgba(0, 0, 0, 0.18),
-			0px 0px 64px rgba(0, 0, 0, 0.25);
+			0px 0px 1.8px rgba(var(--rgb-ink), 0.07),
+			0px 0px 4.3px rgba(var(--rgb-ink), 0.101),
+			0px 0px 8px rgba(var(--rgb-ink), 0.125),
+			0px 0px 14.3px rgba(var(--rgb-ink), 0.149),
+			0px 0px 26.7px rgba(var(--rgb-ink), 0.18),
+			0px 0px 64px rgba(var(--rgb-ink), 0.25);
 	}
 </style>
