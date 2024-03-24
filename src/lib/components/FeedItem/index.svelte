@@ -94,7 +94,7 @@
 		border-radius: 5px;
 
 		&:visited {
-			border-color: white;
+			border-color: rgb(var(--rgb-background));
 		}
 	}
 
