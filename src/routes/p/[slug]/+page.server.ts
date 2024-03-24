@@ -2,7 +2,7 @@ import datocms from '$lib/datocms';
 import { graphql } from '$lib/gql';
 import type { EntryGenerator, PageServerLoad } from './$types';
 
-export const prerender = true;
+export const prerender = 'auto';
 
 export const entries: EntryGenerator = async () => {
 	const query = graphql(/* GraphQL */ `

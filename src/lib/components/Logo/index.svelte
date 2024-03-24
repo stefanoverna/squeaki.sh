@@ -1,4 +1,8 @@
-<p><a href="/">squeaki.sh</a></p>
+<script lang="ts">
+	export let text: string = 'squeaki.sh';
+</script>
+
+<p><a href="/">{text}</a></p>
 
 <style>
 	p a {

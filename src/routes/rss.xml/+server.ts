@@ -43,7 +43,11 @@ export const GET: RequestHandler = async () => {
 		});
 	}
 
-	return new Response(feed.rss2(), {
+	const rss = feed
+		.rss2()
+		.replace('?>', '?><?xml-stylesheet href="/pretty-feed-v3.xsl" type="text/xsl"?>');
+
+	return new Response(rss, {
 		status: 200,
 		headers: {
 			'Content-Type': 'application/xml',

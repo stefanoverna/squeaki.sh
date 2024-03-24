@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { PageServerLoad } from './$types';
+	import type { PageData } from './$types';
 	import Form from '$lib/components/Form/index.svelte';
 	import Logo from '$lib/components/Logo/index.svelte';
 	import Bio from '$lib/components/Bio/index.svelte';
 	import BlogPostExcerpt from '$lib/components/BlogPostExcerpt/index.svelte';
 
-	export let data: PageServerLoad;
+	export let data: PageData;
 </script>
 
 <header>

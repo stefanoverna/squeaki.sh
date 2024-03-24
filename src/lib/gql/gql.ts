@@ -15,6 +15,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n\tfragment BlogPostExcerptFragment on BlogPostRecord {\n\t\tid\n\t\tslug\n\t\ttitle\n\t\t_firstPublishedAt\n\t\tcontent {\n\t\t\tvalue\n\t\t}\n\t}\n": types.BlogPostExcerptFragmentFragmentDoc,
     "\n\tquery Home {\n\t\tblogPosts: allBlogPosts(first: 100, orderBy: _firstPublishedAt_DESC) {\n\t\t\tid\n\t\t\t...BlogPostExcerptFragment\n\t\t}\n\t}\n": types.HomeDocument,
+    "\n\t\tquery Feeds {\n\t\t\tsources: allRssFeeds {\n\t\t\t\tid\n\t\t\t\ttitle\n\t\t\t\tfeedUrl\n\t\t\t\twebsiteUrl\n\t\t\t}\n\t\t}\n\t": types.FeedsDocument,
     "\n\tquery NewsletterSend {\n\t\tblogPosts: allBlogPosts(\n\t\t\torderBy: _firstPublishedAt_ASC\n\t\t\tfilter: { sentToNewsletter: { eq: false } }\n\t\t) {\n\t\t\tid\n\t\t\ttitle\n\t\t\tslug\n\t\t\t...BlogPostFragment\n\t\t}\n\t}\n": types.NewsletterSendDocument,
     "\n\t\tquery BlogPostEntries {\n\t\t\tentries: allBlogPosts(orderBy: _firstPublishedAt_DESC) {\n\t\t\t\tslug\n\t\t\t}\n\t\t}\n\t": types.BlogPostEntriesDocument,
     "\n\t\tquery BlogPost($slug: String!) {\n\t\t\tblogPost(filter: { slug: { eq: $slug } }) {\n\t\t\t\t...BlogPostFragment\n\t\t\t}\n\t\t}\n\t": types.BlogPostDocument,
@@ -47,6 +48,10 @@ export function graphql(source: "\n\tfragment BlogPostExcerptFragment on BlogPos
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n\tquery Home {\n\t\tblogPosts: allBlogPosts(first: 100, orderBy: _firstPublishedAt_DESC) {\n\t\t\tid\n\t\t\t...BlogPostExcerptFragment\n\t\t}\n\t}\n"): (typeof documents)["\n\tquery Home {\n\t\tblogPosts: allBlogPosts(first: 100, orderBy: _firstPublishedAt_DESC) {\n\t\t\tid\n\t\t\t...BlogPostExcerptFragment\n\t\t}\n\t}\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n\t\tquery Feeds {\n\t\t\tsources: allRssFeeds {\n\t\t\t\tid\n\t\t\t\ttitle\n\t\t\t\tfeedUrl\n\t\t\t\twebsiteUrl\n\t\t\t}\n\t\t}\n\t"): (typeof documents)["\n\t\tquery Feeds {\n\t\t\tsources: allRssFeeds {\n\t\t\t\tid\n\t\t\t\ttitle\n\t\t\t\tfeedUrl\n\t\t\t\twebsiteUrl\n\t\t\t}\n\t\t}\n\t"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

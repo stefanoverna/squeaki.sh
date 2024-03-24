@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PageServerLoad } from './$types';
+	import type { PageData } from './$types';
 	import { format } from 'date-fns/format';
 	import { StructuredText } from '@datocms/svelte';
 	import Block from '$lib/components/Block/index.svelte';
@@ -10,7 +10,7 @@
 	import Bio from '$lib/components/Bio/index.svelte';
 	import Logo from '$lib/components/Logo/index.svelte';
 
-	export let data: PageServerLoad;
+	export let data: PageData;
 
 	$: ({ blogPost } = data);
 	$: description = truncate(toPlainText(blogPost.content) || '', 200).replace(/\n/g, '');

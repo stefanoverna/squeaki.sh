@@ -3,6 +3,16 @@ import { PRIVATE_DATOCMS_READONLY_API_TOKEN } from '$env/static/private';
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import { print } from 'graphql';
 
+type GraphQLResponse<TResult = unknown> = { errors: unknown[] } | { data: TResult };
+
+function isValidResponse<TResult = unknown>(body: unknown): body is GraphQLResponse<TResult> {
+	if (typeof body !== 'object' || !body) {
+		return false;
+	}
+
+	return 'error' in body || 'data' in body;
+}
+
 export default async function datocms<TResult = unknown, TVariables = Record<string, unknown>>(
 	document: TypedDocumentNode<TResult, TVariables>,
 	variables?: TVariables,
@@ -23,12 +33,18 @@ export default async function datocms<TResult = unknown, TVariables = Record<str
 
 	const body = await response.json();
 
-	if (body.errors) {
+	const debugStatus = `Query: ${JSON.stringify(query)}, Variables: ${JSON.stringify(
+		variables,
+	)}, Preview: ${dev}, Response: ${JSON.stringify(body)}`;
+
+	if (!isValidResponse<TResult>(body)) {
+		throw new Error(`Invalid response! ${debugStatus}`);
+	}
+
+	if ('errors' in body) {
 		console.log(body.errors);
 
-		throw `Invalid GraphQL response! Query: ${JSON.stringify(query)}, Variables: ${JSON.stringify(
-			variables,
-		)}, Preview: ${dev}, Response: ${JSON.stringify(body)}`;
+		throw new Error(`Response has errors! ${debugStatus}`);
 	}
 
 	return body.data;
