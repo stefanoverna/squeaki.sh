@@ -15,6 +15,7 @@
 		href="/rss.xml"
 	/>
 	<link rel="me" href="https://mastodon.social/@steffoz" />
+	<link rel="me" href="https://github.com/stefanoverna" />
 </svelte:head>
 
 <slot />

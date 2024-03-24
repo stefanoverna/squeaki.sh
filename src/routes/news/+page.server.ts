@@ -51,6 +51,6 @@ export const load: PageServerLoad = async () => {
 	return {
 		generatedAt: new Date(),
 		sources: keyBy(sources, 'id'),
-		items: items.slice(0, 40),
+		items: items.slice(0, 80),
 	};
 };
