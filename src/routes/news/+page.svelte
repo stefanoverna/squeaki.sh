@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import Logo from '$lib/components/Logo/index.svelte';
 	import FeedItem from '$lib/components/FeedItem/index.svelte';
+	import { format } from 'date-fns/format';
 
 	export let data: PageData;
 </script>
@@ -17,12 +17,24 @@
 	<meta name="twitter:title" content="News" />
 	<meta name="twitter:description" content="News from my favourite websites" />
 	<meta name="twitter:card" content="summary_large_image" />
+
+	<script type="module" src="https://unpkg.com/@joinbox/relative-time@latest"></script>
 </svelte:head>
 
-<header>
-	<Logo text="News" />
-</header>
+<div>
+	updated <relative-time data-time={data.generatedAt.toISOString()}
+		>at {format(data.generatedAt, 'p')}</relative-time
+	>
+</div>
 
 {#each data.items as item}
 	<FeedItem source={data.sources[item.sourceId]} {item} />
 {/each}
+
+<style>
+	div {
+		text-align: center;
+		font-size: var(--font-size-xx-small);
+		color: var(--color-txt--subtle);
+	}
+</style>

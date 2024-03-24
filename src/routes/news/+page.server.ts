@@ -30,17 +30,18 @@ export const load: PageServerLoad = async () => {
 			const feed = await new Parser().parseURL(source.feedUrl);
 
 			return feed.items
-				?.map<FeedItem | undefined>((item) =>
-					item.title && (item.published || item.updated) && item.link
-						? {
-								sourceId: source.id,
-								title: item.title,
-								description: truncate(striptags(item.description || item.content || ''), 400),
-								date: (item.published || item.updated) as string,
-								url: item.link,
-							}
-						: undefined,
-				)
+				?.map<FeedItem | undefined>((item) => {
+					const title = item.title || item.guid;
+					const date = item.published || item.updated;
+					const url = item.link;
+					const description = truncate(striptags(item.description || item.content || ''), 400);
+
+					if (!(title && date && url)) {
+						return undefined;
+					}
+
+					return { sourceId: source.id, title, date, url, description };
+				})
 				.filter(Boolean);
 		}),
 	);
@@ -48,6 +49,7 @@ export const load: PageServerLoad = async () => {
 	const items = sortBy(result.filter(Boolean).flat(), (item) => new Date(item.date)).reverse();
 
 	return {
+		generatedAt: new Date(),
 		sources: keyBy(sources, 'id'),
 		items: items.slice(0, 40),
 	};
