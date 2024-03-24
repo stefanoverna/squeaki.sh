@@ -36,7 +36,7 @@
 
 <style>
 	article {
-		margin: var(--half-space) 0;
+		margin: var(--base-space) 0;
 		border-radius: 5px;
 		position: relative;
 		transition: all 0.2s ease-in-out;
@@ -48,6 +48,10 @@
 				0px 0px 10px rgba(0, 0, 0, 0.02),
 				0px 0px 24.1px rgba(0, 0, 0, 0.026),
 				0px 0px 80px rgba(0, 0, 0, 0.04);
+		}
+
+		@media (min-width: 64rem) {
+			margin: var(--half-space) 0;
 		}
 	}
 
@@ -91,12 +95,15 @@
 	}
 
 	.description {
-		font-family: var(--font-family--mono);
-		font-size: var(--font-size-xx-small);
+		font-size: var(--font-size-x-small);
 		display: -webkit-box;
 		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 3;
+		-webkit-line-clamp: 5;
 		overflow: hidden;
+
+		@media (min-width: 40rem) {
+			-webkit-line-clamp: 3;
+		}
 	}
 
 	time {
