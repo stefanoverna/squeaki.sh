@@ -4,35 +4,39 @@
 	import { format } from 'date-fns/format';
 	import { formatRelative } from 'date-fns/formatRelative';
 	import { upperFirst } from 'lodash-es';
-	import { FeedItem, Source } from './types';
+	import type { FeedItem, Source } from './types';
 
 	export let item: FeedItem;
 	export let source: Source;
 
 	$: faviconUrl = `https://s2.googleusercontent.com/s2/favicons?${new URLSearchParams({ domain: source.websiteUrl, sz: '16' }).toString()}`;
+
+	/* eslint svelte/no-at-html-tags: "warn" */
 </script>
 
 <article>
-	<header>
-		<img src={faviconUrl} alt="favicon" />
-		{source.title}
-	</header>
-	<h3>{item.title}</h3>
-	{#if item.description}
-		<div class="description">{item.description}</div>
-	{/if}
-	<time datetime={item.date}
-		>{differenceInDays(new Date(), item.date) > 6
-			? format(item.date, 'PPP')
-			: upperFirst(formatRelative(item.date, new Date()))}</time
-	>
+	<div class="overlay" style={`background-image: url(${faviconUrl})`} />
+	<div class="inner">
+		<header>
+			<img src={faviconUrl} alt="favicon" />
+			{source.title}
+		</header>
+		<h3>{item.title}</h3>
+		{#if item.description}
+			<div class="description">{@html item.description}</div>
+		{/if}
+		<time datetime={item.date}
+			>{differenceInDays(new Date(), item.date) > 6
+				? format(item.date, 'PPP')
+				: upperFirst(formatRelative(item.date, new Date()))}</time
+		>
+	</div>
 	<a href={item.url} target="_blank">Read article</a>
 </article>
 
 <style>
 	article {
 		margin: var(--half-space) 0;
-		padding: var(--base-space);
 		border-radius: 5px;
 		position: relative;
 		transition: all 0.2s ease-in-out;
@@ -45,6 +49,20 @@
 				0px 0px 24.1px rgba(0, 0, 0, 0.026),
 				0px 0px 80px rgba(0, 0, 0, 0.04);
 		}
+	}
+
+	.overlay {
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		opacity: 0.1;
+		background-position: 50% 50%;
+		background-size: cover;
+	}
+
+	.inner {
+		padding: var(--base-space);
+		backdrop-filter: sepia(0.1) blur(50px);
 	}
 
 	header {
@@ -64,7 +82,7 @@
 		text-indent: -9999px;
 		z-index: 1;
 		background: transparent;
-		border: 1px solid var(--color-border);
+		border: 3px solid var(--color-border);
 		border-radius: 5px;
 
 		&:visited {

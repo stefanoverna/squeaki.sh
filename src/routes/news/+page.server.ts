@@ -9,7 +9,7 @@ import striptags from 'striptags';
 import type { PageServerLoad } from './$types';
 
 export const prerender = true;
-export const csr = false;
+// export const csr = false;
 
 export const load: PageServerLoad = async () => {
 	const query = graphql(/* GraphQL */ `
