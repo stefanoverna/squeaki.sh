@@ -1,6 +1,6 @@
 import datocms from '$lib/datocms';
 import { getFragmentData, graphql } from '$lib/gql';
-import { unwindContent } from '$lib/utils/unwindContent';
+import { unwindContent } from '$lib/utils/unwindBlogPostContent';
 import { render as toPlainText } from 'datocms-structured-text-to-plain-text';
 import { Feed } from 'feed';
 import truncate from 'just-truncate';

@@ -143,3 +143,7 @@ hr {
 .post-content blockquote p {
 	display: inline;
 }
+
+svg {
+	fill: inherit;
+}

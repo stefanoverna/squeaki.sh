@@ -13,6 +13,9 @@ const config = {
 		env: {
 			privatePrefix: 'PRIVATE_',
 		},
+		csrf: {
+			checkOrigin: false,
+		},
 	},
 };
 

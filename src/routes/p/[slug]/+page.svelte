@@ -1,19 +1,24 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import { format } from 'date-fns/format';
-	import { StructuredText } from '@datocms/svelte';
-	import Block from '$lib/components/Block/index.svelte';
-	import { isBlock } from 'datocms-structured-text-utils';
-	import truncate from 'just-truncate';
-	import { render as toPlainText } from 'datocms-structured-text-to-plain-text';
-	import Form from '$lib/components/Form/index.svelte';
 	import Bio from '$lib/components/Bio/index.svelte';
+	import Block from '$lib/components/Block/index.svelte';
+	import Comment from '$lib/components/Comment/index.svelte';
+	import Form from '$lib/components/Form/index.svelte';
+	import LikeOrRepost from '$lib/components/LikeOrRepost/index.svelte';
 	import Logo from '$lib/components/Logo/index.svelte';
+	import { StructuredText } from '@datocms/svelte';
+	import { format } from 'date-fns/format';
+	import { render as toPlainText } from 'datocms-structured-text-to-plain-text';
+	import { isBlock, type Document } from 'datocms-structured-text-utils';
+	import truncate from 'just-truncate';
+	import type { PageData } from './$types';
 
 	export let data: PageData;
 
-	$: ({ blogPost } = data);
-	$: description = truncate(toPlainText(blogPost.content) || '', 200).replace(/\n/g, '');
+	$: ({ blogPost, mastodonUrl, likes, reposts, comments } = data);
+	$: description = truncate(toPlainText(blogPost.content.value as Document) || '', 200).replace(
+		/\n/g,
+		'',
+	);
 </script>
 
 <svelte:head>
@@ -37,17 +42,60 @@
 	<Logo />
 </header>
 
-<article>
+<article class="h-entry">
 	<header>
 		{#if blogPost._firstPublishedAt}
-			<time datetime={blogPost._firstPublishedAt}>{format(blogPost._firstPublishedAt, 'PPP')}</time>
+			<time class="dt-published" datetime={blogPost._firstPublishedAt}
+				>{format(blogPost._firstPublishedAt, 'PPP')}</time
+			>
 		{/if}
-		<h1>{blogPost.title}</h1>
+		<h1 class="p-name">
+			{blogPost.title}
+		</h1>
 	</header>
-	<div class="post-content">
+	<div class="post-content e-content">
 		<StructuredText data={blogPost.content} components={[[isBlock, Block]]} />
 	</div>
+	<a style="display: none" rel="author" class="p-author h-card" href="https://squeaki.sh">
+		Stefano Verna
+	</a>
+	<a style="display: none" class="u-url" href="https://squeaki.sh/p/{blogPost.slug}">#</a>
 </article>
+
+{#if mastodonUrl}
+	<hr class="larger" />
+
+	<div class="join">
+		Join the conversation with a <a href={mastodonUrl} target="_blank">
+			like, boost or comment on Mastodon
+		</a>
+	</div>
+{/if}
+
+{#if likes.length > 0}
+	<div class="reactions">
+		<h5 class="reactions-title">Likes:</h5>
+		{#each likes as mention}
+			<LikeOrRepost {mention} />
+		{/each}
+	</div>
+{/if}
+
+{#if reposts.length > 0}
+	<div class="reactions">
+		<h5 class="reactions-title">Reposts:</h5>
+		{#each reposts as mention}
+			<LikeOrRepost {mention} />
+		{/each}
+	</div>
+{/if}
+
+{#if comments.length > 0}
+	<h5 class="comments-title">Comments</h5>
+	{#each comments as mention}
+		<Comment {mention} />
+	{/each}
+{/if}
 
 <footer>
 	<hr class="larger" />
@@ -57,6 +105,9 @@
 </footer>
 
 <style>
+	article {
+		margin-bottom: var(--double-space);
+	}
 	header {
 		margin-bottom: var(--double-space);
 		text-align: center;
@@ -81,5 +132,42 @@
 
 	hr.larger {
 		max-width: 300px;
+	}
+
+	.join {
+		text-align: center;
+		margin-top: var(--double-space);
+		margin-bottom: var(--double-space);
+		color: var(--color-txt--subtle);
+		font-size: var(--font-size-x-small);
+	}
+
+	.join a {
+		color: inherit;
+
+		&:hover {
+			color: var(--color-txt);
+		}
+	}
+
+	.reactions {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		gap: 3px;
+		margin-bottom: var(--half-space);
+	}
+
+	.reactions-title {
+		margin: 0;
+		margin-right: var(--base-space);
+	}
+
+	.comments-title {
+		font-size: var(--font-size-large);
+		margin-top: var(--double-space);
+		margin-bottom: var(--base-space);
 	}
 </style>

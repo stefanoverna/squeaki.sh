@@ -12,15 +12,17 @@
 	$: content = toPlainText(data.content.value as Document) || '';
 </script>
 
-<article>
+<article class="h-entry">
 	<header>
 		{#if data._firstPublishedAt}
-			<time datetime={data._firstPublishedAt}>{format(data._firstPublishedAt, 'PPP')}</time>
+			<time class="dt-published" datetime={data._firstPublishedAt}
+				>{format(data._firstPublishedAt, 'PPP')}</time
+			>
 		{/if}
-		<h2>{data.title}</h2>
+		<h2 class="p-name">{data.title}</h2>
 	</header>
-	<div>{truncate(content, 400)}</div>
-	<a href="/p/{data.slug}">Read more</a>
+	<div class="p-summary">{truncate(content, 400)}</div>
+	<a href="/p/{data.slug}" class="u-url">Read more</a>
 </article>
 
 <style>

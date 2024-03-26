@@ -5,14 +5,14 @@ import {
 } from '$env/static/private';
 import datocms from '$lib/datocms';
 import { getFragmentData, graphql } from '$lib/gql';
-import { unwindContent } from '$lib/utils/unwindContent';
+import { unwindContent } from '$lib/utils/unwindBlogPostContent';
 import { ApiError, buildClient } from '@datocms/cma-client';
-import { RequestHandler } from '@sveltejs/kit';
+import { fail, type RequestHandler } from '@sveltejs/kit';
 import { render as toPlainText } from 'datocms-structured-text-to-plain-text';
-import { Models } from 'postmark';
+import type { Models } from 'postmark';
+import { baseMessage } from '../../../lib/utils/newsletter';
 import { BlogPostFragment } from '../../p/[slug]/fragments';
 import { toContentToHtml } from '../../rss.xml/utils';
-import { SUBSCRIBER_MODEL_ID, baseMessage } from '../subscribe/utils';
 
 const datoClient = buildClient({
 	apiToken: PRIVATE_DATOCMS_READWRITE_API_TOKEN,
@@ -36,7 +36,7 @@ async function getSubscriberEmails() {
 	const result: string[] = [];
 
 	for await (const item of datoClient.items.listPagedIterator({
-		filter: { type: SUBSCRIBER_MODEL_ID },
+		filter: { type: 'newsletter_subscriber' },
 	})) {
 		result.push(item.email as string);
 	}
@@ -98,13 +98,18 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		return Response.json({ status: 'success', result: sentStatuses });
 	} catch (e) {
-		if (e instanceof ApiError) {
-			return Response.json({
+		fail;
+		return Response.json(
+			{
 				status: 'error',
-				details: e.response.body,
-			});
-		}
-
-		return Response.json({ status: 'error', message: JSON.stringify(e) });
+				details:
+					e instanceof ApiError
+						? e.response.body
+						: e instanceof Error
+							? e.message
+							: JSON.stringify(e),
+			},
+			{ status: 500 },
+		);
 	}
 };

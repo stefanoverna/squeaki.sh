@@ -2,9 +2,10 @@ import {
 	PRIVATE_DATOCMS_READWRITE_API_TOKEN,
 	PRIVATE_POSTMARK_WEBHOOK_API_TOKEN,
 } from '$env/static/private';
-import { ApiError, buildClient } from '@datocms/cma-client';
-import { RequestHandler } from '@sveltejs/kit';
-import { SUBSCRIBER_MODEL_ID } from '../subscribe/utils';
+import { ErrorWithStatus, handleErrors } from '$lib/utils/apiResponses';
+import { SUBSCRIBER_MODEL_ID } from '$lib/utils/constants';
+import { buildClient } from '@datocms/cma-client';
+import type { RequestHandler } from '@sveltejs/kit';
 
 const client = buildClient({ apiToken: PRIVATE_DATOCMS_READWRITE_API_TOKEN });
 
@@ -18,20 +19,20 @@ type WebhookResponse = {
 };
 
 export const POST: RequestHandler = async ({ request }) => {
-	if (request.headers.get('authorization') !== `Bearer ${PRIVATE_POSTMARK_WEBHOOK_API_TOKEN}`) {
-		return Response.json({ status: 'error', message: 'Invalid request!' }, { status: 401 });
-	}
-
-	// https://postmarkapp.com/developer/webhooks/subscription-change-webhook
-	let body: WebhookResponse;
-
 	try {
-		body = (await request.json()) as WebhookResponse;
-	} catch (e) {
-		return Response.json({ status: 'error', message: 'Invalid request!' }, { status: 422 });
-	}
+		if (request.headers.get('authorization') !== `Bearer ${PRIVATE_POSTMARK_WEBHOOK_API_TOKEN}`) {
+			throw new ErrorWithStatus(401, 'Invalid request!');
+		}
 
-	try {
+		// https://postmarkapp.com/developer/webhooks/subscription-change-webhook
+		let body: WebhookResponse;
+
+		try {
+			body = (await request.json()) as WebhookResponse;
+		} catch (e) {
+			throw new ErrorWithStatus(422, 'Invalid request!');
+		}
+
 		if (body.SuppressSending) {
 			const recipients = await client.items.list({
 				filter: {
@@ -49,11 +50,9 @@ export const POST: RequestHandler = async ({ request }) => {
 				item_type: { type: 'item_type', id: SUBSCRIBER_MODEL_ID },
 			});
 		}
-	} catch (e) {
-		if (e instanceof ApiError) {
-			console.log(JSON.stringify(e.errors));
-		}
-	}
 
-	return Response.json({ status: 'success' });
+		return Response.json({ status: 'success' });
+	} catch (e) {
+		return handleErrors(e);
+	}
 };

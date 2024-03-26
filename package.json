@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
-		"build": "npm run generate-ts-types && vite build",
+		"build": "npm run update-mastodon-urls && npm run generate-ts-types && vite build",
 		"build:ci": "npm run build && curl -n -X POST $PRIVATE_DATOCMS_BUILD_TRIGGER_WEBHOOK -H 'Content-Type: application/json' -d '{ \"status\": \"success\" }'",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -13,7 +13,8 @@
 		"format": "prettier --write .",
 		"generate-ts-types": "graphql-codegen --config graphql.config.ts",
 		"generate-ts-types:watch": "graphql-codegen --watch --config graphql.config.ts",
-		"prepare": "husky install"
+		"prepare": "husky install",
+		"update-mastodon-urls": "ts-node --esm ./scripts/update-mastodon-urls.ts"
 	},
 	"devDependencies": {
 		"@graphql-codegen/cli": "^5.0.0",
@@ -52,6 +53,7 @@
 		"satori-html": "^0.3.2",
 		"svelte": "^4.2.7",
 		"svelte-check": "^3.6.0",
+		"ts-node": "^10.9.2",
 		"tslib": "^2.4.1",
 		"typescript": "^5.0.0",
 		"vite": "^5.0.3"

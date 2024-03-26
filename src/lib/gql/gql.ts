@@ -18,7 +18,7 @@ const documents = {
     "\n\t\tquery Feeds {\n\t\t\tsources: allRssFeeds {\n\t\t\t\tid\n\t\t\t\ttitle\n\t\t\t\tfeedUrl\n\t\t\t\twebsiteUrl\n\t\t\t}\n\t\t}\n\t": types.FeedsDocument,
     "\n\tquery NewsletterSend {\n\t\tblogPosts: allBlogPosts(\n\t\t\torderBy: _firstPublishedAt_ASC\n\t\t\tfilter: { sentToNewsletter: { eq: false } }\n\t\t) {\n\t\t\tid\n\t\t\ttitle\n\t\t\tslug\n\t\t\t...BlogPostFragment\n\t\t}\n\t}\n": types.NewsletterSendDocument,
     "\n\t\tquery BlogPostEntries {\n\t\t\tentries: allBlogPosts(orderBy: _firstPublishedAt_DESC) {\n\t\t\t\tslug\n\t\t\t}\n\t\t}\n\t": types.BlogPostEntriesDocument,
-    "\n\t\tquery BlogPost($slug: String!) {\n\t\t\tblogPost(filter: { slug: { eq: $slug } }) {\n\t\t\t\t...BlogPostFragment\n\t\t\t}\n\t\t}\n\t": types.BlogPostDocument,
+    "\n\t\tquery BlogPost($slug: String!) {\n\t\t\tblogPost(filter: { slug: { eq: $slug } }) {\n\t\t\t\t...BlogPostFragment\n\n\t\t\t\tmastodonUrl\n\t\t\t}\n\t\t}\n\t": types.BlogPostDocument,
     "\n\t\tquery BlogPostCardEntries {\n\t\t\tentries: allBlogPosts(orderBy: _firstPublishedAt_DESC) {\n\t\t\t\tslug\n\t\t\t}\n\t\t}\n\t": types.BlogPostCardEntriesDocument,
     "\n\t\tquery BlogPostCard($slug: String!) {\n\t\t\tblogPost(filter: { slug: { eq: $slug } }) {\n\t\t\t\ttitle\n\t\t\t\tcontent {\n\t\t\t\t\tvalue\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t": types.BlogPostCardDocument,
     "\n\tfragment BlogPostFragment on BlogPostRecord {\n\t\tid\n\t\tslug\n\t\ttitle\n\t\t_firstPublishedAt\n\t\tcontent {\n\t\t\tvalue\n\n\t\t\tblocks {\n\t\t\t\t...BlockFragment\n\t\t\t}\n\t\t}\n\t}\n": types.BlogPostFragmentFragmentDoc,
@@ -63,7 +63,7 @@ export function graphql(source: "\n\t\tquery BlogPostEntries {\n\t\t\tentries: a
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n\t\tquery BlogPost($slug: String!) {\n\t\t\tblogPost(filter: { slug: { eq: $slug } }) {\n\t\t\t\t...BlogPostFragment\n\t\t\t}\n\t\t}\n\t"): (typeof documents)["\n\t\tquery BlogPost($slug: String!) {\n\t\t\tblogPost(filter: { slug: { eq: $slug } }) {\n\t\t\t\t...BlogPostFragment\n\t\t\t}\n\t\t}\n\t"];
+export function graphql(source: "\n\t\tquery BlogPost($slug: String!) {\n\t\t\tblogPost(filter: { slug: { eq: $slug } }) {\n\t\t\t\t...BlogPostFragment\n\n\t\t\t\tmastodonUrl\n\t\t\t}\n\t\t}\n\t"): (typeof documents)["\n\t\tquery BlogPost($slug: String!) {\n\t\t\tblogPost(filter: { slug: { eq: $slug } }) {\n\t\t\t\t...BlogPostFragment\n\n\t\t\t\tmastodonUrl\n\t\t\t}\n\t\t}\n\t"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

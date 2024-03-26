@@ -2,11 +2,12 @@ import {
 	PRIVATE_DATOCMS_READWRITE_API_TOKEN,
 	PRIVATE_POSTMARK_SERVER_TOKEN,
 } from '$env/static/private';
+import { SUBSCRIBER_MODEL_ID } from '$lib/utils/constants';
+import { baseMessage } from '$lib/utils/newsletter';
 import { ApiError, buildClient } from '@datocms/cma-client';
 import { fail } from '@sveltejs/kit';
-import { Models } from 'postmark';
-import { Actions } from './$types';
-import { SUBSCRIBER_MODEL_ID, baseMessage } from './utils';
+import type { Models } from 'postmark';
+import type { Actions } from './$types';
 
 const client = buildClient({ apiToken: PRIVATE_DATOCMS_READWRITE_API_TOKEN });
 

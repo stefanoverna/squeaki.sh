@@ -11,7 +11,7 @@
 
 	$: faviconUrl = `https://s2.googleusercontent.com/s2/favicons?${new URLSearchParams({ domain: source.websiteUrl, sz: '16' }).toString()}`;
 
-	/* eslint svelte/no-at-html-tags: "warn" */
+	/* eslint svelte/no-at-html-tags: "off" */
 </script>
 
 <article>

@@ -1,5 +1,5 @@
 import { type BlogPostFragmentFragment } from '$lib/gql/graphql';
-import { unwindContent } from '$lib/utils/unwindContent';
+import { unwindContent } from '$lib/utils/unwindBlogPostContent';
 import { render as toHtml } from 'datocms-structured-text-to-html-string';
 
 export function toContentToHtml(data: BlogPostFragmentFragment) {
