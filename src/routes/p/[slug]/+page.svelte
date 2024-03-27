@@ -63,6 +63,9 @@
 </article>
 
 {#if mastodonUrl}
+	<!-- svelte-ignore a11y-missing-content -->
+	<a id="reactions" />
+
 	<hr class="larger" />
 
 	<div class="join">
