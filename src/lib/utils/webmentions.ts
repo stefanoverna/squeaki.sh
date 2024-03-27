@@ -35,5 +35,5 @@ export async function fetchMentions(targetUrl: string) {
 	const url = `https://webmention.io/api/mentions.json?${new URLSearchParams({ target: targetUrl, 'per-page': '100' }).toString()}`;
 	const response = await fetch(url);
 	const body = (await response.json()) as Mentions;
-	return body.links;
+	return JSON.parse(JSON.stringify(body.links).replace(/\?{4}/g, ''));
 }
