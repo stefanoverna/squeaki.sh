@@ -56,9 +56,14 @@
 	<div class="post-content e-content">
 		<StructuredText data={blogPost.content} components={[[isBlock, Block]]} />
 	</div>
-	<a style="display: none" rel="author" class="p-author h-card" href="https://squeaki.sh">
-		Stefano Verna
-	</a>
+	<span style="display: none" class="p-author h-card">
+		<a class="p-name u-url" href="https://squeaki.sh">Stefano Verna</a>
+		<span class="p-nickname">steffoz</span>
+		<img class="u-photo" src="https://squeaki.sh/photo.png" alt="Avatar" />
+		<p class="p-note">
+			<a href="https://www.datocms.com">DatoCMS</a> CEO
+		</p>
+	</span>
 	<a style="display: none" class="u-url" href="https://squeaki.sh/p/{blogPost.slug}">#</a>
 </article>
 

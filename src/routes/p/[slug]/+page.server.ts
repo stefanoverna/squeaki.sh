@@ -47,7 +47,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		likes: webmentions.filter((e) => e.activity.type === 'like'),
 		reposts: webmentions.filter((e) => e.activity.type === 'repost'),
 		comments: sortBy(
-			webmentions.filter((e) => e.activity.type === 'reply'),
+			webmentions.filter((e) => e.activity.type === 'reply' || e.activity.type === 'link'),
 			'publishedAt',
 		),
 	};

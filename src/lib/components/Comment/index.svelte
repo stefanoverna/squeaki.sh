@@ -3,6 +3,7 @@
 	import MentionAuthorAvatar from '$lib/components/MentionAuthorAvatar/index.svelte';
 	import { format } from 'date-fns/format';
 	import striptags from 'striptags';
+	import truncate from 'just-truncate';
 
 	export let mention: Mention;
 
@@ -11,7 +12,7 @@
 
 <q>
 	<div>
-		{@html striptags(mention.data.content || '', ['strong', 'b', 'em', 'i', 'code'])}
+		{@html truncate(striptags(mention.data.content || '', ['strong', 'b', 'em', 'i', 'code']), 200)}
 	</div>
 
 	<div class="footer">
