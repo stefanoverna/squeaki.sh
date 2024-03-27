@@ -42,43 +42,50 @@
 	<Logo />
 </header>
 
-<article class="h-entry">
-	<header>
-		{#if blogPost._firstPublishedAt}
-			<time class="dt-published" datetime={blogPost._firstPublishedAt}
-				>{format(blogPost._firstPublishedAt, 'PPP')}</time
+<div class="h-entry">
+	<article>
+		<header>
+			{#if blogPost._firstPublishedAt}
+				<time class="dt-published" datetime={blogPost._firstPublishedAt}
+					>{format(blogPost._firstPublishedAt, 'PPP')}</time
+				>
+			{/if}
+			<h1 class="p-name">
+				{blogPost.title}
+			</h1>
+		</header>
+		<div class="post-content e-content">
+			<StructuredText data={blogPost.content} components={[[isBlock, Block]]} />
+		</div>
+		<span style="display: none" class="p-author h-card">
+			<a class="p-name u-url" href="https://squeaki.sh">Stefano Verna</a>
+			<span class="p-nickname">steffoz</span>
+			<img class="u-photo" src="https://squeaki.sh/photo.png" alt="Avatar" />
+			<p class="p-note">
+				<a href="https://www.datocms.com">DatoCMS</a> CEO
+			</p>
+		</span>
+		<a style="display: none" class="u-url" href="https://squeaki.sh/p/{blogPost.slug}">#</a>
+	</article>
+
+	{#if mastodonUrl}
+		<!-- svelte-ignore a11y-missing-content -->
+		<a id="reactions" />
+
+		<hr class="larger" />
+
+		<div class="join">
+			Join the conversation with a <a
+				href={mastodonUrl}
+				target="_blank"
+				class="u-syndication"
+				rel="syndication"
 			>
-		{/if}
-		<h1 class="p-name">
-			{blogPost.title}
-		</h1>
-	</header>
-	<div class="post-content e-content">
-		<StructuredText data={blogPost.content} components={[[isBlock, Block]]} />
-	</div>
-	<span style="display: none" class="p-author h-card">
-		<a class="p-name u-url" href="https://squeaki.sh">Stefano Verna</a>
-		<span class="p-nickname">steffoz</span>
-		<img class="u-photo" src="https://squeaki.sh/photo.png" alt="Avatar" />
-		<p class="p-note">
-			<a href="https://www.datocms.com">DatoCMS</a> CEO
-		</p>
-	</span>
-	<a style="display: none" class="u-url" href="https://squeaki.sh/p/{blogPost.slug}">#</a>
-</article>
-
-{#if mastodonUrl}
-	<!-- svelte-ignore a11y-missing-content -->
-	<a id="reactions" />
-
-	<hr class="larger" />
-
-	<div class="join">
-		Join the conversation with a <a href={mastodonUrl} target="_blank">
-			like, boost or comment on Mastodon
-		</a>
-	</div>
-{/if}
+				like, boost or comment on Mastodon
+			</a>
+		</div>
+	{/if}
+</div>
 
 {#if likes.length > 0}
 	<div class="reactions">
