@@ -85,6 +85,12 @@ h6 {
 	line-height: 1;
 }
 
+h4,
+h5,
+h6 {
+	color: var(--color-txt--subtle);
+}
+
 a {
 	color: var(--color-txt--action);
 	word-wrap: break-word;
@@ -146,4 +152,13 @@ hr {
 
 svg {
 	fill: inherit;
+}
+
+code {
+	font-family: var(--font-family--mono);
+	font-size: 0.9em;
+	display: inline;
+	background: rgba(var(--rgb-blue), 0.1);
+	padding: 0 0.2em;
+	border-radius: 3px;
 }

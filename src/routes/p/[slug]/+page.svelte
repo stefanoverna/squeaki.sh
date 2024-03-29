@@ -4,11 +4,12 @@
 	import Comment from '$lib/components/Comment/index.svelte';
 	import Form from '$lib/components/Form/index.svelte';
 	import LikeOrRepost from '$lib/components/LikeOrRepost/index.svelte';
+	import SyntaxHighlight from '$lib/components/SyntaxHighlight/index.svelte';
 	import Logo from '$lib/components/Logo/index.svelte';
 	import { StructuredText } from '@datocms/svelte';
 	import { format } from 'date-fns/format';
 	import { render as toPlainText } from 'datocms-structured-text-to-plain-text';
-	import { isBlock, type Document } from 'datocms-structured-text-utils';
+	import { isBlock, type Document, isCode } from 'datocms-structured-text-utils';
 	import truncate from 'just-truncate';
 	import type { PageData } from './$types';
 
@@ -55,7 +56,13 @@
 			</h1>
 		</header>
 		<div class="post-content e-content">
-			<StructuredText data={blogPost.content} components={[[isBlock, Block]]} />
+			<StructuredText
+				data={blogPost.content}
+				components={[
+					[isBlock, Block],
+					[isCode, SyntaxHighlight],
+				]}
+			/>
 		</div>
 		<span style="display: none" class="p-author h-card">
 			<a class="p-name u-url" href="https://squeaki.sh">Stefano Verna</a>
