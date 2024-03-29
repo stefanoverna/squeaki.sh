@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
-		"build": "npm run send-webmentions && npm run update-mastodon-urls && npm run generate-ts-types && vite build",
+		"build": "npm run update-mastodon-urls && npm run generate-ts-types && vite build && npm run send-webmentions",
 		"build:ci": "npm run build && curl -n -X POST $PRIVATE_DATOCMS_BUILD_TRIGGER_WEBHOOK -H 'Content-Type: application/json' -d '{ \"status\": \"success\" }'",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -14,7 +14,7 @@
 		"generate-ts-types": "graphql-codegen --config graphql.config.ts",
 		"generate-ts-types:watch": "graphql-codegen --watch --config graphql.config.ts",
 		"prepare": "husky install",
-		"send-webmentions": "webmention https://squeaki.sh/rss.xml --limit 1 --send",
+		"send-webmentions": "webmention .svelte-kit/output/prerendered/pages/rss.xml --limit 1 --send",
 		"update-mastodon-urls": "ts-node --esm ./scripts/update-mastodon-urls.ts"
 	},
 	"devDependencies": {

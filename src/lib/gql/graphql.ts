@@ -87,9 +87,6 @@ export enum BlogPostModelOrderBy {
 /** Record of type 📰 Blog post (blog_post) */
 export type BlogPostRecord = RecordInterface & {
   __typename?: 'BlogPostRecord';
-  _allReferencingWebmentions: Array<WebmentionRecord>;
-  /** Returns meta information regarding a record collection */
-  _allReferencingWebmentionsMeta: CollectionMetadata;
   _createdAt: Scalars['DateTime']['output'];
   /** Editing URL */
   _editingUrl?: Maybe<Scalars['String']['output']>;
@@ -109,26 +106,6 @@ export type BlogPostRecord = RecordInterface & {
   sentToNewsletter: Scalars['BooleanType']['output'];
   slug: Scalars['String']['output'];
   title: Scalars['String']['output'];
-};
-
-
-/** Record of type 📰 Blog post (blog_post) */
-export type BlogPostRecord_AllReferencingWebmentionsArgs = {
-  fallbackLocales?: InputMaybe<Array<SiteLocale>>;
-  filter?: InputMaybe<WebmentionModelFilter>;
-  first?: InputMaybe<Scalars['IntType']['input']>;
-  locale?: InputMaybe<SiteLocale>;
-  orderBy?: InputMaybe<Array<InputMaybe<WebmentionModelOrderBy>>>;
-  skip?: InputMaybe<Scalars['IntType']['input']>;
-  through?: InputMaybe<InverseRelationshipFilterBetweenWebmentionAndBlogPost>;
-};
-
-
-/** Record of type 📰 Blog post (blog_post) */
-export type BlogPostRecord_AllReferencingWebmentionsMetaArgs = {
-  filter?: InputMaybe<WebmentionModelFilter>;
-  locale?: InputMaybe<SiteLocale>;
-  through?: InputMaybe<InverseRelationshipFilterBetweenWebmentionAndBlogPost>;
 };
 
 
@@ -1894,22 +1871,6 @@ export type InUseFilter = {
   eq?: InputMaybe<Scalars['BooleanType']['input']>;
 };
 
-/** Specifies how to filter by linking fields */
-export type InverseRelationshipFieldFilterBetweenWebmentionAndBlogPost = {
-  /** Filter linking records that reference current record in at least one of the specified fields */
-  anyIn?: InputMaybe<Array<WebmentionModelFieldsReferencingBlogPostModel>>;
-  /** Filter linking records that do not reference current record in any of the specified fields */
-  notIn?: InputMaybe<Array<WebmentionModelFieldsReferencingBlogPostModel>>;
-};
-
-/** Specifies how to filter linking records */
-export type InverseRelationshipFilterBetweenWebmentionAndBlogPost = {
-  /** Specifies how to filter by linking fields */
-  fields?: InputMaybe<InverseRelationshipFieldFilterBetweenWebmentionAndBlogPost>;
-  /** Specifies how to filter by linking locales */
-  locales?: InputMaybe<LinkingLocalesFilter>;
-};
-
 /** Specifies how to filter by ID */
 export type ItemIdFilter = {
   /** Search the record with the specified ID */
@@ -1927,40 +1888,6 @@ export enum ItemStatus {
   Published = 'published',
   Updated = 'updated'
 }
-
-/** Specifies how to filter JSON fields */
-export type JsonFilter = {
-  /** Filter records with the specified field defined (i.e. with any value) or not */
-  exists?: InputMaybe<Scalars['BooleanType']['input']>;
-};
-
-/** Specifies how to filter Single-link fields */
-export type LinkFilter = {
-  /** Search for records with an exact match. The specified value must be a Record ID */
-  eq?: InputMaybe<Scalars['ItemId']['input']>;
-  /** Filter records with the specified field defined (i.e. with any value) or not */
-  exists?: InputMaybe<Scalars['BooleanType']['input']>;
-  /** Filter records linked to one of the specified records */
-  in?: InputMaybe<Array<InputMaybe<Scalars['ItemId']['input']>>>;
-  /** Exclude records with an exact match. The specified value must be a Record ID */
-  neq?: InputMaybe<Scalars['ItemId']['input']>;
-  /** Filter records not linked to one of the specified records */
-  notIn?: InputMaybe<Array<InputMaybe<Scalars['ItemId']['input']>>>;
-};
-
-/** Linking locales */
-export enum LinkingLocale {
-  NonLocalized = '_nonLocalized',
-  En = 'en'
-}
-
-/** Specifies how to filter by linking locales */
-export type LinkingLocalesFilter = {
-  /** Filter linking records that link to current record in at least one of the specified locales */
-  anyIn?: InputMaybe<Array<LinkingLocale>>;
-  /** Filter linking records that do not link to current record in any of the specified locales */
-  notIn?: InputMaybe<Array<LinkingLocale>>;
-};
 
 export enum MuxThumbnailFormatType {
   Gif = 'gif',
@@ -2069,8 +1996,6 @@ export type Query = {
   _allRssFeedsMeta: CollectionMetadata;
   /** Returns meta information regarding an assets collection */
   _allUploadsMeta: CollectionMetadata;
-  /** Returns meta information regarding a record collection */
-  _allWebmentionsMeta: CollectionMetadata;
   /** Returns the single instance record */
   _site: Site;
   /** Returns a collection of records */
@@ -2081,8 +2006,6 @@ export type Query = {
   allRssFeeds: Array<RssFeedRecord>;
   /** Returns a collection of assets */
   allUploads: Array<FileField>;
-  /** Returns a collection of records */
-  allWebmentions: Array<WebmentionRecord>;
   /** Returns a specific record */
   blogPost?: Maybe<BlogPostRecord>;
   /** Returns a specific record */
@@ -2091,8 +2014,6 @@ export type Query = {
   rssFeed?: Maybe<RssFeedRecord>;
   /** Returns a specific asset */
   upload?: Maybe<FileField>;
-  /** Returns a specific record */
-  webmention?: Maybe<WebmentionRecord>;
 };
 
 
@@ -2120,13 +2041,6 @@ export type Query_AllRssFeedsMetaArgs = {
 /** The query root for this schema */
 export type Query_AllUploadsMetaArgs = {
   filter?: InputMaybe<UploadFilter>;
-  locale?: InputMaybe<SiteLocale>;
-};
-
-
-/** The query root for this schema */
-export type Query_AllWebmentionsMetaArgs = {
-  filter?: InputMaybe<WebmentionModelFilter>;
   locale?: InputMaybe<SiteLocale>;
 };
 
@@ -2183,17 +2097,6 @@ export type QueryAllUploadsArgs = {
 
 
 /** The query root for this schema */
-export type QueryAllWebmentionsArgs = {
-  fallbackLocales?: InputMaybe<Array<SiteLocale>>;
-  filter?: InputMaybe<WebmentionModelFilter>;
-  first?: InputMaybe<Scalars['IntType']['input']>;
-  locale?: InputMaybe<SiteLocale>;
-  orderBy?: InputMaybe<Array<InputMaybe<WebmentionModelOrderBy>>>;
-  skip?: InputMaybe<Scalars['IntType']['input']>;
-};
-
-
-/** The query root for this schema */
 export type QueryBlogPostArgs = {
   fallbackLocales?: InputMaybe<Array<SiteLocale>>;
   filter?: InputMaybe<BlogPostModelFilter>;
@@ -2226,15 +2129,6 @@ export type QueryUploadArgs = {
   filter?: InputMaybe<UploadFilter>;
   locale?: InputMaybe<SiteLocale>;
   orderBy?: InputMaybe<Array<InputMaybe<UploadOrderBy>>>;
-};
-
-
-/** The query root for this schema */
-export type QueryWebmentionArgs = {
-  fallbackLocales?: InputMaybe<Array<SiteLocale>>;
-  filter?: InputMaybe<WebmentionModelFilter>;
-  locale?: InputMaybe<SiteLocale>;
-  orderBy?: InputMaybe<Array<InputMaybe<WebmentionModelOrderBy>>>;
 };
 
 export type RecordInterface = {
@@ -2887,79 +2781,6 @@ export type VideoRecord = RecordInterface & {
 
 /** Block of type 📹 Video (video) */
 export type VideoRecord_SeoMetaTagsArgs = {
-  locale?: InputMaybe<SiteLocale>;
-};
-
-/** Linking fields */
-export enum WebmentionModelFieldsReferencingBlogPostModel {
-  WebmentionTarget = 'webmention_target'
-}
-
-export type WebmentionModelFilter = {
-  AND?: InputMaybe<Array<InputMaybe<WebmentionModelFilter>>>;
-  OR?: InputMaybe<Array<InputMaybe<WebmentionModelFilter>>>;
-  _createdAt?: InputMaybe<CreatedAtFilter>;
-  _firstPublishedAt?: InputMaybe<PublishedAtFilter>;
-  _isValid?: InputMaybe<BooleanFilter>;
-  _publicationScheduledAt?: InputMaybe<PublishedAtFilter>;
-  _publishedAt?: InputMaybe<PublishedAtFilter>;
-  _status?: InputMaybe<StatusFilter>;
-  _unpublishingScheduledAt?: InputMaybe<PublishedAtFilter>;
-  _updatedAt?: InputMaybe<UpdatedAtFilter>;
-  id?: InputMaybe<ItemIdFilter>;
-  microformats?: InputMaybe<JsonFilter>;
-  source?: InputMaybe<StringFilter>;
-  target?: InputMaybe<LinkFilter>;
-};
-
-export enum WebmentionModelOrderBy {
-  CreatedAtAsc = '_createdAt_ASC',
-  CreatedAtDesc = '_createdAt_DESC',
-  FirstPublishedAtAsc = '_firstPublishedAt_ASC',
-  FirstPublishedAtDesc = '_firstPublishedAt_DESC',
-  IsValidAsc = '_isValid_ASC',
-  IsValidDesc = '_isValid_DESC',
-  PublicationScheduledAtAsc = '_publicationScheduledAt_ASC',
-  PublicationScheduledAtDesc = '_publicationScheduledAt_DESC',
-  PublishedAtAsc = '_publishedAt_ASC',
-  PublishedAtDesc = '_publishedAt_DESC',
-  StatusAsc = '_status_ASC',
-  StatusDesc = '_status_DESC',
-  UnpublishingScheduledAtAsc = '_unpublishingScheduledAt_ASC',
-  UnpublishingScheduledAtDesc = '_unpublishingScheduledAt_DESC',
-  UpdatedAtAsc = '_updatedAt_ASC',
-  UpdatedAtDesc = '_updatedAt_DESC',
-  IdAsc = 'id_ASC',
-  IdDesc = 'id_DESC',
-  SourceAsc = 'source_ASC',
-  SourceDesc = 'source_DESC'
-}
-
-/** Record of type 📮 Webmention (webmention) */
-export type WebmentionRecord = RecordInterface & {
-  __typename?: 'WebmentionRecord';
-  _createdAt: Scalars['DateTime']['output'];
-  /** Editing URL */
-  _editingUrl?: Maybe<Scalars['String']['output']>;
-  _firstPublishedAt?: Maybe<Scalars['DateTime']['output']>;
-  _isValid: Scalars['BooleanType']['output'];
-  _modelApiKey: Scalars['String']['output'];
-  _publicationScheduledAt?: Maybe<Scalars['DateTime']['output']>;
-  _publishedAt?: Maybe<Scalars['DateTime']['output']>;
-  /** Generates SEO and Social card meta tags to be used in your frontend */
-  _seoMetaTags: Array<Tag>;
-  _status: ItemStatus;
-  _unpublishingScheduledAt?: Maybe<Scalars['DateTime']['output']>;
-  _updatedAt: Scalars['DateTime']['output'];
-  id: Scalars['ItemId']['output'];
-  microformats: Scalars['JsonField']['output'];
-  source: Scalars['String']['output'];
-  target: BlogPostRecord;
-};
-
-
-/** Record of type 📮 Webmention (webmention) */
-export type WebmentionRecord_SeoMetaTagsArgs = {
   locale?: InputMaybe<SiteLocale>;
 };
 
