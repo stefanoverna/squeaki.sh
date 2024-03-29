@@ -22,11 +22,3 @@
 </svelte:head>
 
 <slot />
-
-<span class="h-card" style="display: none">
-	<a class="p-name u-url" href="https://squeaki.sh">Stefano Verna</a>
-	<img class="u-photo" src="https://squeaki.sh/photo.png" alt="Avatar" />
-	<p class="p-note">
-		<a href="https://www.datocms.com">DatoCMS</a> CEO
-	</p>
-</span>
