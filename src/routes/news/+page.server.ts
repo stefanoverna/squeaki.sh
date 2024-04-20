@@ -14,7 +14,7 @@ export const csr = false;
 export const load: PageServerLoad = async () => {
 	const query = graphql(/* GraphQL */ `
 		query Feeds {
-			sources: allRssFeeds {
+			sources: allRssFeeds(first: 100) {
 				id
 				title
 				feedUrl
@@ -29,7 +29,7 @@ export const load: PageServerLoad = async () => {
 		sources.map(async (source) => {
 			const feed = await new Parser().parseURL(source.feedUrl);
 
-			return feed.items
+			const items = feed.items
 				?.map<FeedItem | undefined>((item) => {
 					const title = item.title || item.guid;
 					const date = item.published || item.updated;
@@ -43,6 +43,10 @@ export const load: PageServerLoad = async () => {
 					return { sourceId: source.id, title, date, url, description };
 				})
 				.filter(Boolean);
+
+			console.log(source.feedUrl, items?.length || 0);
+
+			return items;
 		}),
 	);
 
