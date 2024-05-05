@@ -23,11 +23,17 @@
 				class="compact-media-preview__spacer"
 				style:aspect-ratio={block.image.responsiveImage.width / block.image.responsiveImage.height}
 			>
-				<Image data={block.image.responsiveImage} layout="fill" />
+				<a href={block.image.responsiveImage.src} target="_blank">
+					<Image data={block.image.responsiveImage} layout="fill" />
+				</a>
 			</div>
 		</div>
 	{:else}
-		<div class="spacer"><Image data={block.image.responsiveImage} /></div>
+		<div class="spacer">
+			<a href={block.image.responsiveImage.src} target="_blank">
+				<Image data={block.image.responsiveImage} />
+			</a>
+		</div>
 	{/if}
 {:else}
 	<div class="spacer">{block.__typename}</div>
