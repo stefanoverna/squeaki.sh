@@ -31,6 +31,7 @@
 	<meta property="og:site_name" content="squeaki.sh" />
 	<meta property="og:url" content="https://squeaki.sh/p/{blogPost.slug}" />
 	<meta property="og:description" content={description} />
+	<meta property="fediverse:creator" content="@steffoz@mastodon.social" />
 
 	<meta name="twitter:title" content={blogPost.title} />
 	<meta name="twitter:description" content={description} />
