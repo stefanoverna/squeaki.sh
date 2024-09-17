@@ -27,26 +27,31 @@ export const load: PageServerLoad = async () => {
 
 	const result = await Promise.all(
 		sources.map(async (source) => {
-			const feed = await new Parser().parseURL(source.feedUrl);
+			try {
+				const feed = await new Parser().parseURL(source.feedUrl);
 
-			const items = feed.items
-				?.map<FeedItem | undefined>((item) => {
-					const title = item.title || item.guid;
-					const date = item.published || item.updated;
-					const url = item.link;
-					const description = truncate(striptags(item.description || item.content || ''), 400);
+				const items = feed.items
+					?.map<FeedItem | undefined>((item) => {
+						const title = item.title || item.guid;
+						const date = item.published || item.updated;
+						const url = item.link;
+						const description = truncate(striptags(item.description || item.content || ''), 400);
 
-					if (!(title && date && url)) {
-						return undefined;
-					}
+						if (!(title && date && url)) {
+							return undefined;
+						}
 
-					return { sourceId: source.id, title, date, url, description };
-				})
-				.filter(Boolean);
+						return { sourceId: source.id, title, date, url, description };
+					})
+					.filter(Boolean);
 
-			console.log(source.feedUrl, items?.length || 0);
+				console.log(source.feedUrl, items?.length || 0);
 
-			return items;
+				return items;
+			} catch (e) {
+				console.log(`Error with ${source.feedUrl}`, e);
+				throw e;
+			}
 		}),
 	);
 

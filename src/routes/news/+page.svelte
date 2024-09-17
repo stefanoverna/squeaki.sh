@@ -2,6 +2,8 @@
 	import type { PageData } from './$types';
 	import FeedItem from '$lib/components/FeedItem/index.svelte';
 	import { format } from 'date-fns/format';
+	import { isBefore } from 'date-fns/isBefore';
+	import { subHours } from 'date-fns/subHours';
 
 	export let data: PageData;
 </script>
@@ -21,7 +23,7 @@
 	<script type="module" src="https://unpkg.com/@joinbox/relative-time@latest"></script>
 </svelte:head>
 
-<div>
+<div style={isBefore(new Date(), subHours(new Date(), 1)) ? 'color: red;' : undefined}>
 	updated <relative-time data-time={data.generatedAt.toISOString()}
 		>at {format(data.generatedAt, 'p')}</relative-time
 	>
