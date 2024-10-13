@@ -1,4 +1,4 @@
-import { FeedItem } from '$lib/components/FeedItem/types';
+import type { FeedItem } from '$lib/components/FeedItem/types';
 import datocms from '$lib/datocms';
 import { graphql } from '$lib/gql';
 import 'global-jsdom/register';
@@ -25,6 +25,8 @@ export const load: PageServerLoad = async () => {
 
 	const { sources } = await datocms(query);
 
+	const erroredSources: typeof sources = [];
+
 	const result = await Promise.all(
 		sources.map(async (source) => {
 			try {
@@ -49,8 +51,8 @@ export const load: PageServerLoad = async () => {
 
 				return items;
 			} catch (e) {
+				erroredSources.push(source);
 				console.log(`Error with ${source.feedUrl}`, e);
-				throw e;
 			}
 		}),
 	);
@@ -61,5 +63,6 @@ export const load: PageServerLoad = async () => {
 		generatedAt: new Date(),
 		sources: keyBy(sources, 'id'),
 		items: items.slice(0, 80),
+		erroredSources,
 	};
 };

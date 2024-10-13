@@ -23,7 +23,7 @@
 	<script type="module" src="https://unpkg.com/@joinbox/relative-time@latest"></script>
 </svelte:head>
 
-<div style={isBefore(new Date(), subHours(new Date(), 1)) ? 'color: red;' : undefined}>
+<div class="pre" style={isBefore(new Date(), subHours(new Date(), 1)) ? 'color: red;' : undefined}>
 	updated <relative-time data-time={data.generatedAt.toISOString()}
 		>at {format(data.generatedAt, 'p')}</relative-time
 	>
@@ -33,10 +33,35 @@
 	<FeedItem source={data.sources[item.sourceId]} {item} />
 {/each}
 
+{#if data.erroredSources.length > 0}
+	<div class="post">
+		Errored sources:
+		<ul>
+			{#each data.erroredSources as source}
+				<li>
+					<a href={source.websiteUrl}>{source.title}</a>
+				</li>
+			{/each}
+		</ul>
+	</div>
+{/if}
+
 <style>
-	div {
+	.pre,
+	.post {
 		text-align: center;
 		font-size: var(--font-size-xx-small);
 		color: var(--color-txt--subtle);
+	}
+
+	.post ul,
+	.post li {
+		display: inline;
+		margin: 0;
+		padding: 0;
+	}
+
+	.post li ~ .post li::before {
+		content: ', ';
 	}
 </style>
