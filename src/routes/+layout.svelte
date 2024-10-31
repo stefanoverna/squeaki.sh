@@ -19,6 +19,8 @@
 
 	<link rel="webmention" href="https://webmention.io/squeaki.sh/webmention" />
 	<link rel="pingback" href="https://webmention.io/squeaki.sh/xmlrpc" />
+
+	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
 </svelte:head>
 
 <slot />

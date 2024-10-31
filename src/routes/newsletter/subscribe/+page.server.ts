@@ -1,6 +1,7 @@
 import {
 	PRIVATE_DATOCMS_READWRITE_API_TOKEN,
 	PRIVATE_POSTMARK_SERVER_TOKEN,
+	PRIVATE_TURNSTILE_SECRET_KEY,
 } from '$env/static/private';
 import { SUBSCRIBER_MODEL_ID } from '$lib/utils/constants';
 import { baseMessage } from '$lib/utils/newsletter';
@@ -51,13 +52,43 @@ async function sendConfirmation(email: string) {
 	return await response.json();
 }
 
+async function verifyChallenge(challenge: string, ip: string) {
+	const formData = new FormData();
+	formData.append('secret', PRIVATE_TURNSTILE_SECRET_KEY);
+	formData.append('response', challenge);
+	formData.append('remoteip', ip);
+
+	const result = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+		body: formData,
+		method: 'POST',
+	});
+
+	const outcome = (await result.json()) as { success: boolean };
+
+	return outcome.success;
+}
+
 export const actions: Actions = {
 	default: async ({ request }) => {
 		const data = await request.formData();
 		const email = data.get('email');
+		const challenge = data.get('cf-turnstile-response');
+		const ip = request.headers.get('cf-connecting-ip');
 
 		if (!email || typeof email !== 'string') {
-			return fail(422, { email: '', invalid: true });
+			return fail(422, { email: '', invalid: 'email' });
+		}
+
+		if (!challenge || typeof challenge !== 'string') {
+			return fail(422, { email: '', invalid: 'challenge' });
+		}
+
+		if (!ip) {
+			return fail(422, { email: '', invalid: 'ip' });
+		}
+
+		if (!(await verifyChallenge(challenge, ip))) {
+			return fail(422, { email: '', invalid: 'challenge-verification' });
 		}
 
 		try {

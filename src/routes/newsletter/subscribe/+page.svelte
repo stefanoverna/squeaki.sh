@@ -19,7 +19,7 @@
 			</p>
 		</article>
 	{:else if form?.invalid}
-		<h3>Please, insert a valid email!</h3>
+		<h3 data-error={form.invalid}>Please, insert a valid email!</h3>
 		<Form email={form.email || undefined} />
 	{:else}
 		<Form />

@@ -3,6 +3,7 @@
 </script>
 
 <form method="POST" action="/newsletter/subscribe">
+	<div class="cf-turnstile" data-sitekey="0x4AAAAAAAy5UqG_yRwKOsY8" data-size="compact"></div>
 	<label for="email">
 		Subscribe to get future posts via email (or grab the <a href="/rss.xml" target="_blank"
 			>RSS feed</a
