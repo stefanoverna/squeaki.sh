@@ -6,7 +6,7 @@
 	<title>squeaki.sh</title>
 	<meta
 		name="description"
-		content="I'm Stefano Verna, the Founder and CEO of DatoCMS. Here I pen down my thoughts on business, society, programming, and whatever else is on my mind."
+		content="I'm Stefano Verna, the Founder and CEO of DatoCMS. Here I pen down my thoughts on business, society, programming, personal life, and whatever else is on my mind."
 	/>
 	<link
 		rel="alternate"
