@@ -36,6 +36,7 @@ const config: IGraphQLConfig = {
 							JsonField: 'unknown',
 							MetaTagAttributes: 'Record<string, string>',
 							UploadId: 'string',
+							SiteLocale: 'string',
 						},
 					},
 				},

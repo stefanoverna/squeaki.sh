@@ -4,7 +4,7 @@ import { unwindContent } from '$lib/utils/unwindBlogPostContent';
 import { render as toPlainText } from 'datocms-structured-text-to-plain-text';
 import { Feed } from 'feed';
 import truncate from 'just-truncate';
-import { BlogPostFragment } from '../p/[slug]/fragments';
+import { BlogPostFragment } from '../p/[slug]/[[locale]]/fragments';
 import type { RequestHandler } from './$types';
 import { toContentToHtml } from './utils';
 

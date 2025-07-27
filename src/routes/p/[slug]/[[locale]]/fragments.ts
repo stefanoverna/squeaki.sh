@@ -5,6 +5,7 @@ export const BlogPostFragment = graphql(/* GraphQL */ `
 		id
 		slug
 		title
+		_locales
 		_firstPublishedAt
 		content {
 			value

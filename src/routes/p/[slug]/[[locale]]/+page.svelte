@@ -15,16 +15,42 @@
 
 	export let data: PageData;
 
-	$: ({ blogPost, mastodonUrl, likes, reposts, comments } = data);
+	$: ({ blogPost, mastodonUrl, likes, reposts, comments, locale } = data);
 	$: description = truncate(toPlainText(blogPost.content.value as Document) || '', 200).replace(
 		/\n/g,
 		'',
 	);
+	$: alternateVersion = (() => {
+		const currentLocale = locale || 'en';
+		const alternateLocale = currentLocale === 'en' ? 'it' : 'en';
+		const alternateLocaleName = currentLocale === 'en' ? 'Italian' : 'English';
+
+		if (blogPost._locales.includes(alternateLocale)) {
+			return {
+				locale: alternateLocale,
+				name: alternateLocaleName,
+				url:
+					alternateLocale === 'en'
+						? `/p/${blogPost.slug}`
+						: `/p/${blogPost.slug}/${alternateLocale}`,
+			};
+		}
+
+		return undefined;
+	})();
 </script>
 
 <svelte:head>
 	<title>{blogPost.title}</title>
 	<meta name="description" content={description} />
+
+	{#if alternateVersion}
+		<link
+			rel="alternate"
+			hreflang={alternateVersion.locale}
+			href={`https://squeaki.sh${alternateVersion.url}`}
+		/>
+	{/if}
 
 	<meta property="og:title" content={blogPost.title} />
 	<meta property="og:image" content="https://squeaki.sh/p/{blogPost.slug}/card.png" />
@@ -75,6 +101,14 @@
 		</span>
 		<a style="display: none" class="u-url" href="https://squeaki.sh/p/{blogPost.slug}">#</a>
 	</article>
+
+	{#if alternateVersion}
+		<div class="alt">
+			This article is also available in <a href={alternateVersion.url}>
+				{alternateVersion.name}
+			</a>
+		</div>
+	{/if}
 
 	{#if mastodonUrl}
 		<!-- svelte-ignore a11y-missing-content -->
@@ -157,6 +191,7 @@
 		max-width: 300px;
 	}
 
+	.alt,
 	.join {
 		text-align: center;
 		margin-top: var(--double-space);

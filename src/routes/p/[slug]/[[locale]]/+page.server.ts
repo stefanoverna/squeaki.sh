@@ -13,19 +13,23 @@ export const entries: EntryGenerator = async () => {
 		query BlogPostEntries {
 			entries: allBlogPosts(orderBy: _firstPublishedAt_DESC) {
 				slug
+				_locales
 			}
 		}
 	`);
 
 	const { entries } = await datocms(query);
 
-	return entries;
+	return entries.flatMap((entry) => [
+		{ slug: entry.slug },
+		...(entry._locales.includes('it') ? [{ slug: entry.slug, locale: 'it' }] : []),
+	]);
 };
 
 export const load: PageServerLoad = async ({ params }) => {
 	const query = graphql(/* GraphQL */ `
-		query BlogPost($slug: String!) {
-			blogPost(filter: { slug: { eq: $slug } }) {
+		query BlogPost($slug: String!, $locale: SiteLocale) {
+			blogPost(filter: { slug: { eq: $slug } }, locale: $locale) {
 				...BlogPostFragment
 
 				mastodonUrl
@@ -34,7 +38,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	`);
 
 	const [{ blogPost }, webmentions] = await Promise.all([
-		datocms(query, { slug: params.slug }),
+		datocms(query, { slug: params.slug, locale: params.locale }),
 		fetchMentions(`https://squeaki.sh/p/${params.slug}`),
 	]);
 
@@ -42,6 +46,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		return error(404, { message: 'Not found!' });
 	}
 	return {
+		locale: params.locale || 'en',
 		blogPost: omit(getFragmentData(BlogPostFragment, blogPost), 'webmentions'),
 		mastodonUrl: blogPost.mastodonUrl,
 		likes: webmentions.filter((e) => e.activity.type === 'like'),

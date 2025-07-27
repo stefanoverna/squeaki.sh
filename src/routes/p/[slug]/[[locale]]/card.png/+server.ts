@@ -30,10 +30,12 @@ export const entries: EntryGenerator = async () => {
 	return entries;
 };
 
-export const GET: RequestHandler<{ slug: string }> = async ({ params }) => {
+export const GET: RequestHandler<{ slug: string; locale: string | undefined }> = async ({
+	params,
+}) => {
 	const query = graphql(/* GraphQL */ `
-		query BlogPostCard($slug: String!) {
-			blogPost(filter: { slug: { eq: $slug } }) {
+		query BlogPostCard($slug: String!, $locale: SiteLocale) {
+			blogPost(filter: { slug: { eq: $slug } }, locale: $locale) {
 				title
 				content {
 					value
@@ -42,7 +44,7 @@ export const GET: RequestHandler<{ slug: string }> = async ({ params }) => {
 		}
 	`);
 
-	const { blogPost } = await datocms(query, { slug: params.slug });
+	const { blogPost } = await datocms(query, { slug: params.slug, locale: params.locale });
 
 	if (!blogPost) {
 		return new Response('not found', { status: 404 });

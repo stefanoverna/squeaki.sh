@@ -11,7 +11,7 @@ import { fail, type RequestHandler } from '@sveltejs/kit';
 import { render as toPlainText } from 'datocms-structured-text-to-plain-text';
 import type { Models } from 'postmark';
 import { baseMessage } from '../../../lib/utils/newsletter';
-import { BlogPostFragment } from '../../p/[slug]/fragments';
+import { BlogPostFragment } from '../../p/[slug]/[[locale]]/fragments';
 import { toContentToHtml } from '../../rss.xml/utils';
 
 const datoClient = buildClient({
