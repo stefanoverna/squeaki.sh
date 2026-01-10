@@ -1,0 +1,262 @@
+---
+import { datocms } from '~/lib/datocms';
+import { BlogPostQuery } from './_graphql';
+import { fetchMentions } from '~/lib/utils/webmentions';
+import { sortBy } from 'lodash-es';
+import Layout from '~/layouts/Layout.astro';
+import { StructuredText, ensureValidStructuredTextProps } from '@datocms/astro';
+import { DatoImage } from '~/components/DatoImage';
+import { DatoVideo } from '~/components/DatoVideo';
+import Logo from '~/components/Logo.astro';
+import Bio from '~/components/Bio.astro';
+import Form from '~/components/Form.astro';
+import Comment from '~/components/Comment.astro';
+import LikeOrRepost from '~/components/LikeOrRepost.astro';
+import { format } from 'date-fns';
+import { render as toPlainText } from 'datocms-structured-text-to-plain-text';
+import truncate from 'just-truncate';
+import type { Document } from 'datocms-structured-text-utils';
+
+interface Props {
+  slug: string;
+  locale: string;
+}
+
+const { slug, locale } = Astro.props;
+
+const result = await datocms(BlogPostQuery, { slug, locale: locale as 'it' | 'en' });
+const blogPost = result?.blogPost;
+
+if (!blogPost) {
+  return Astro.redirect('/404');
+}
+
+const webmentions = await fetchMentions(`https://squeaki.sh/p/${slug}`);
+
+const description = truncate(toPlainText(blogPost.content.value as Document) || '', 200).replace(
+  /\n/g,
+  '',
+);
+
+const currentLocale = locale;
+const alternateLocale = currentLocale === 'en' ? 'it' : 'en';
+const alternateLocaleName = currentLocale === 'en' ? 'Italian' : 'English';
+const alternateVersion = blogPost._locales.includes(alternateLocale)
+  ? {
+      locale: alternateLocale,
+      name: alternateLocaleName,
+      url:
+        alternateLocale === 'en' ? `/p/${blogPost.slug}` : `/p/${blogPost.slug}/${alternateLocale}`,
+    }
+  : undefined;
+
+const likes = webmentions.filter((e) => e.activity.type === 'like');
+const reposts = webmentions.filter((e) => e.activity.type === 'repost');
+const comments = sortBy(
+  webmentions.filter((e) => e.activity.type === 'reply' || e.activity.type === 'link'),
+  'data.published',
+);
+
+const mastodonUrl = blogPost.mastodonUrl;
+---
+
+<Layout title={blogPost.title}>
+  <meta name="description" content={description} />
+  {
+    alternateVersion && (
+      <link
+        rel="alternate"
+        hreflang={alternateVersion.locale}
+        href={`https://squeaki.sh${alternateVersion.url}`}
+      />
+    )
+  }
+  <meta property="og:title" content={blogPost.title} />
+  <meta property="og:image" content={`https://squeaki.sh/p/${blogPost.slug}/card.png`} />
+  <meta property="og:site_name" content="squeaki.sh" />
+  <meta property="og:url" content={`https://squeaki.sh/p/${blogPost.slug}`} />
+  <meta property="og:description" content={description} />
+  <meta property="fediverse:creator" content="@steffoz@mastodon.social" />
+  <meta name="twitter:title" content={blogPost.title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content={`https://squeaki.sh/p/${blogPost.slug}/card.png`} />
+  <meta name="twitter:url" content={`https://squeaki.sh/p/${blogPost.slug}`} />
+
+  <header>
+    <Logo />
+  </header>
+
+  <div class="h-entry">
+    <article>
+      <header>
+        {
+          blogPost._firstPublishedAt && (
+            <time class="dt-published" datetime={blogPost._firstPublishedAt}>
+              {format(new Date(blogPost._firstPublishedAt), 'PPP')}
+            </time>
+          )
+        }
+        <h1 class="p-name">{blogPost.title}</h1>
+      </header>
+      <div class="post-content e-content">
+        <StructuredText
+          {...ensureValidStructuredTextProps({
+            data: blogPost.content,
+            blockComponents: {
+              ImageRecord: DatoImage,
+              VideoRecord: DatoVideo,
+            },
+          })}
+        />
+      </div>
+      <span style="display: none" class="p-author h-card">
+        <a class="p-name u-url" href="https://squeaki.sh">Stefano Verna</a>
+        <span class="p-nickname">steffoz</span>
+        <img class="u-photo" src="https://squeaki.sh/photo.png" alt="Avatar" />
+        <p class="p-note">
+          <a href="https://www.datocms.com">DatoCMS</a> CEO
+        </p>
+      </span>
+      <a style="display: none" class="u-url" href={`https://squeaki.sh/p/${blogPost.slug}`}> # </a>
+    </article>
+
+    {
+      alternateVersion && (
+        <div class="alt">
+          This article is also available in{' '}
+          <a href={alternateVersion.url}>{alternateVersion.name}</a>
+        </div>
+      )
+    }
+
+    {
+      mastodonUrl && (
+        <>
+          <a id="reactions" />
+          <hr class="larger" />
+          <div class="join">
+            Join the conversation with a
+            <a href={mastodonUrl} target="_blank" class="u-syndication" rel="syndication">
+              like, boost or comment on Mastodon
+            </a>
+          </div>
+        </>
+      )
+    }
+  </div>
+
+  {
+    likes.length > 0 && (
+      <div class="reactions">
+        <h5 class="reactions-title">Likes:</h5>
+        {likes.map((mention) => (
+          <LikeOrRepost mention={mention} />
+        ))}
+      </div>
+    )
+  }
+
+  {
+    reposts.length > 0 && (
+      <div class="reactions">
+        <h5 class="reactions-title">Reposts:</h5>
+        {reposts.map((mention) => (
+          <LikeOrRepost mention={mention} />
+        ))}
+      </div>
+    )
+  }
+
+  {
+    comments.length > 0 && (
+      <>
+        <h5 class="comments-title">Comments</h5>
+        {comments.map((mention) => (
+          <Comment mention={mention} />
+        ))}
+      </>
+    )
+  }
+
+  <footer>
+    <hr class="larger" />
+    <Bio />
+    <hr />
+    <Form />
+  </footer>
+</Layout>
+
+<style>
+  article {
+    margin-bottom: var(--double-space);
+  }
+  header {
+    margin-bottom: var(--double-space);
+    text-align: center;
+  }
+
+  time {
+    display: block;
+    color: var(--color-txt--subtle);
+    font-size: var(--font-size-x-small);
+    margin-bottom: var(--half-space);
+  }
+
+  h1 {
+    font-size: var(--font-size-xx-large);
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  footer {
+    margin-top: var(--double-space);
+  }
+
+  hr.larger {
+    max-width: 300px;
+  }
+
+  .alt,
+  .join {
+    text-align: center;
+    margin-top: var(--double-space);
+    margin-bottom: var(--double-space);
+    color: var(--color-txt--subtle);
+    font-size: var(--font-size-x-small);
+  }
+
+  .join a {
+    color: inherit;
+  }
+
+  .join a:hover {
+    color: var(--color-txt);
+  }
+
+  .reactions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    margin-bottom: var(--half-space);
+  }
+
+  .reactions-title {
+    margin: 0;
+    margin-right: var(--base-space);
+  }
+
+  .comments-title {
+    font-size: var(--font-size-large);
+    margin-top: var(--double-space);
+    margin-bottom: var(--base-space);
+  }
+
+  .post-image {
+    max-width: 100%;
+    height: auto;
+  }
+</style>

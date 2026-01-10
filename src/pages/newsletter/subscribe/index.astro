@@ -1,0 +1,157 @@
+---
+import { actions } from 'astro:actions';
+import Layout from '~/layouts/Layout.astro';
+import Logo from '~/components/Logo.astro';
+
+export const prerender = false;
+
+let result: { data?: any; error?: any } | null = null;
+let errorMessage = '';
+
+// Handle POST request
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+  result = await Astro.callAction(actions.newsletter.subscribe, formData);
+
+  if (result.error) {
+    errorMessage = result.error.message || 'An error occurred. Please try again.';
+  }
+}
+---
+
+<Layout>
+  <Logo />
+
+  <main>
+    {
+      result && !result.error ? (
+        <article class="card">
+          <h1>Subscribed!</h1>
+          <p>
+            Check your email for a confirmation link. If you don't receive an email, you might
+            already be a subscriber.
+          </p>
+        </article>
+      ) : (
+        <>
+          {errorMessage && <h3 class="error">{errorMessage}</h3>}
+          <form method="POST">
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAAAy5UqG_yRwKOsY8" data-size="compact" />
+            {/* prettier-ignore */}
+            <label for="email">
+              Subscribe to get future posts via email (or grab the{' '}
+              <a href="/rss.xml" target="_blank">RSS feed</a>)
+            </label>
+            <div class="flex">
+              <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="Type your email…"
+                required
+                transition:persist
+              />
+              <button type="submit">Subscribe</button>
+            </div>
+          </form>
+        </>
+      )
+    }
+  </main>
+</Layout>
+
+<style>
+  main {
+    text-align: center;
+    margin: 10vh 0;
+  }
+
+  .card {
+    margin: 0 auto;
+    overflow: initial;
+    transform: rotate(-1deg);
+    max-width: 45rem;
+    border-radius: 5px;
+    color: var(--color-txt) !important;
+    box-shadow: 5px 5px 7px var(--color-shadow);
+    padding: var(--base-space);
+    text-align: center;
+    box-shadow:
+      1.2px 1.7px 4px rgba(var(--rgb-ink), 0.014),
+      2.8px 4.1px 9.6px rgba(var(--rgb-ink), 0.02),
+      5.3px 7.8px 18.2px rgba(var(--rgb-ink), 0.025),
+      9.4px 13.8px 32.4px rgba(var(--rgb-ink), 0.03),
+      17.5px 25.9px 60.6px rgba(var(--rgb-ink), 0.036),
+      42px 62px 145px rgba(var(--rgb-ink), 0.05);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .card {
+      border: 1px solid var(--color-border);
+    }
+  }
+
+  .error {
+    color: var(--color-txt);
+    opacity: 0.9;
+    margin-bottom: var(--base-space);
+    font-weight: 500;
+  }
+
+  label {
+    display: block;
+    color: var(--color-txt--subtle);
+    font-size: var(--font-size-x-small);
+    text-align: center;
+    margin: 0;
+  }
+
+  .flex {
+    display: flex;
+    font-size: var(--font-size-x-small);
+    max-width: 40ch;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: var(--half-space);
+  }
+
+  input {
+    padding: 0.65em 1em;
+    margin: 0;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-radius: 1.5em 0 0 1.5em;
+    font-size: inherit;
+    color: inherit;
+  }
+
+  input:focus {
+    border: 1px solid rgba(var(--rgb-blue), 0.6);
+    outline: none;
+  }
+
+  button {
+    all: unset;
+    cursor: pointer;
+    padding: 0.5em 1em;
+    background: rgba(var(--rgb-blue), 0.1);
+    border: 1px solid var(--color-border);
+    border-left-color: rgba(0, 0, 0, 0);
+    border-radius: 0 1.5em 1.5em 0;
+    color: var(--color-txt--subtle);
+  }
+
+  button:hover {
+    background: rgba(var(--rgb-blue), 0.2);
+  }
+
+  button:focus {
+    border: 1px solid rgba(var(--rgb-blue), 0.6);
+    outline: none;
+  }
+
+  a {
+    color: inherit;
+  }
+</style>

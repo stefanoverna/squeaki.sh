@@ -1,0 +1,30 @@
+---
+interface Author {
+  photo?: string | null;
+  name: string;
+}
+
+interface Props {
+  author: Author;
+  width?: number;
+  height?: number;
+}
+
+const { author, width = 32, height = 32 } = Astro.props;
+const url =
+  author.photo ||
+  `https://ui-avatars.com/api/?${new URLSearchParams({
+    name: author.name,
+    background: 'random',
+    format: 'svg',
+  }).toString()}`;
+---
+
+<img src={url} alt={author.name} width={width} height={height} loading="lazy" />
+
+<style>
+  img {
+    display: block;
+    border-radius: 100px;
+  }
+</style>

@@ -1,0 +1,52 @@
+---
+import { datocms } from '~/lib/datocms';
+import { HomeQuery } from './_graphql';
+import Layout from '~/layouts/Layout.astro';
+import Logo from '~/components/Logo.astro';
+import Bio from '~/components/Bio.astro';
+import Form from '~/components/Form.astro';
+import { BlogPostExcerpt } from '~/components/BlogPostExcerpt';
+
+export const prerender = true;
+
+const { blogPosts } = await datocms(HomeQuery);
+---
+
+<Layout>
+  <header>
+    <Logo />
+    <Bio />
+    <hr />
+    <Form />
+  </header>
+
+  <div class="h-feed">
+    <span class="p-name" style="display: none">squeaki.sh</span>
+
+    {
+      blogPosts.map((blogPost) => (
+        <div class="blogpost-spacer">
+          <BlogPostExcerpt blogPost={blogPost} />
+        </div>
+      ))
+    }
+
+    <span class="p-author h-card" style="display: none">
+      <a class="p-name u-url" href="https://squeaki.sh">Stefano Verna</a>
+      <img class="u-photo" src="https://squeaki.sh/photo.png" alt="Avatar" />
+      <p class="p-note">
+        <a href="https://www.datocms.com">DatoCMS</a> CEO
+      </p>
+    </span>
+  </div>
+</Layout>
+
+<style>
+  header {
+    margin-bottom: var(--double-space);
+  }
+
+  .blogpost-spacer {
+    margin: var(--double-space) 0;
+  }
+</style>

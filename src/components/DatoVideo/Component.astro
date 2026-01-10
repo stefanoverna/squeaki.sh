@@ -1,0 +1,20 @@
+---
+import { readFragment, type FragmentOf } from '~/lib/datocms/graphql';
+import { VideoBlockFragment } from './graphql';
+import { VideoPlayer } from '~/components/VideoPlayer';
+
+type Props = {
+  block: FragmentOf<typeof VideoBlockFragment>;
+};
+
+const { block } = Astro.props;
+const data = readFragment(VideoBlockFragment, block);
+---
+
+<div class="spacer"><VideoPlayer data={data.video} /></div>
+
+<style>
+  .spacer {
+    margin: var(--double-space) 0;
+  }
+</style>

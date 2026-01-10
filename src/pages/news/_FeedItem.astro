@@ -1,0 +1,168 @@
+---
+import { differenceInDays, format, formatRelative } from 'date-fns';
+import { upperFirst } from 'lodash-es';
+
+interface Source {
+  id: string;
+  title: string;
+  websiteUrl: string;
+  feedUrl: string;
+}
+
+interface FeedItem {
+  sourceId: string;
+  title: string;
+  date: string;
+  url: string;
+  description: string;
+}
+
+interface Props {
+  item: FeedItem;
+  source: Source;
+}
+
+const { item, source } = Astro.props;
+const faviconUrl = `https://s2.googleusercontent.com/s2/favicons?${new URLSearchParams({
+  domain: source.websiteUrl,
+  sz: '16',
+}).toString()}`;
+
+function formatDate(date: string) {
+  try {
+    return differenceInDays(new Date(), date) > 6
+      ? format(date, 'PPP')
+      : upperFirst(formatRelative(date, new Date()));
+  } catch {
+    return '???';
+  }
+}
+
+const displayDate = formatDate(item.date);
+---
+
+<article>
+  <div class="overlay" style={`background-image: url(${faviconUrl})`}></div>
+  <div class="inner">
+    <header>
+      <img src={faviconUrl} alt="favicon" width="16" />
+      {source.title}
+    </header>
+    <h3>{item.title}</h3>
+    {item.description && <div class="description" set:html={item.description} />}
+    <time datetime={item.date}>{displayDate}</time>
+  </div>
+  <a class="borders" href={item.url} target="_blank">Read article</a>
+</article>
+
+<style>
+  article {
+    margin: var(--base-space) 0;
+    border-radius: 5px;
+    position: relative;
+  }
+
+  article:hover {
+    box-shadow:
+      0px 0px 3.6px rgba(var(--rgb-ink), 0.014),
+      0px 0px 10px rgba(var(--rgb-ink), 0.02),
+      0px 0px 24.1px rgba(var(--rgb-ink), 0.026),
+      0px 0px 80px rgba(var(--rgb-ink), 0.04);
+  }
+
+  @media (min-width: 60rem) {
+    article {
+      margin: var(--half-space) 0;
+    }
+  }
+
+  a.borders {
+    position: absolute;
+    inset: 0;
+    border: 3px solid var(--color-txt--subtle);
+    border-radius: 5px;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    text-indent: -9999px;
+    padding: var(--base-space);
+  }
+
+  a.borders:after {
+    content: 'To read';
+    position: absolute;
+    text-indent: 0;
+    top: 50%;
+    right: 100%;
+    padding-right: var(--double-space);
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    white-space: nowrap;
+    line-height: 1;
+    transform: translateY(-50%);
+    color: var(--color-txt--subtle);
+  }
+
+  @media (max-width: 60rem) {
+    a.borders:after {
+      display: none;
+    }
+  }
+
+  a.borders:visited {
+    border-color: rgb(var(--rgb-background));
+  }
+
+  a.borders:visited:after {
+    color: rgb(var(--rgb-background));
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.1;
+    background-position: 50% 50%;
+    background-size: cover;
+    border-radius: 5px;
+  }
+
+  .inner {
+    padding: var(--base-space);
+    backdrop-filter: blur(20px);
+    border-radius: 5px;
+  }
+
+  header {
+    font-size: var(--font-size-small);
+    margin: 0 0 var(--quarter-space);
+    color: var(--color-txt--subtle);
+  }
+
+  h3 {
+    font-size: var(--font-size-large);
+    margin: 0 0 var(--quarter-space);
+  }
+
+  .description {
+    font-size: var(--font-size-x-small);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    overflow: hidden;
+  }
+
+  @media (min-width: 40rem) {
+    .description {
+      -webkit-line-clamp: 3;
+    }
+  }
+
+  time {
+    display: block;
+    color: var(--color-txt--subtle);
+    font-size: var(--font-size-x-small);
+    margin-top: var(--half-space);
+  }
+</style>

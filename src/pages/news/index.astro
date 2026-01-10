@@ -1,0 +1,148 @@
+---
+import { datocms } from '~/lib/datocms';
+import { graphql } from '~/lib/datocms/graphql';
+import Layout from '~/layouts/Layout.astro';
+import FeedItem from './_FeedItem.astro';
+import truncate from 'just-truncate';
+import { keyBy, sortBy } from 'lodash-es';
+import striptags from 'striptags';
+import { format, isBefore, subHours } from 'date-fns';
+import { parseFeed } from 'feedsmith';
+
+export const prerender = true;
+
+const query = graphql(/* GraphQL */ `
+  query Feeds {
+    sources: allRssFeeds(first: 100) {
+      id
+      title
+      feedUrl
+      websiteUrl
+    }
+  }
+`);
+
+const { sources } = await datocms(query);
+
+const erroredSources: typeof sources = [];
+
+type FeedItemType = {
+  sourceId: string;
+  title: string;
+  date: string;
+  url: string;
+  description: string;
+};
+
+const result = await Promise.all(
+  sources.map(async (source) => {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+      const response = await fetch(source.feedUrl, { signal: controller.signal });
+      clearTimeout(timeoutId);
+      const text = await response.text();
+      const feed = parseFeed(text);
+
+      console.log('Parsing', source.feedUrl);
+
+      const items: FeedItemType[] = [];
+
+      if (feed.format === 'rss') {
+        for (const item of feed.feed.items || []) {
+          const title = item.title || item.guid?.value;
+          const date = item.pubDate;
+          const url = item.link;
+          const description = truncate(
+            striptags(item.description || item.content?.encoded || ''),
+            400,
+          );
+
+          if (title && date && url) {
+            items.push({ sourceId: source.id, title, date, url, description });
+          }
+        }
+      } else if (feed.format === 'atom') {
+        for (const item of feed.feed.entries || []) {
+          const title = item.title;
+          const date = item.published || item.updated;
+          const url = item.links?.[0]?.href;
+          const description = truncate(striptags(item.content || item.summary || ''), 400);
+
+          if (title && date && url) {
+            items.push({ sourceId: source.id, title, date, url, description });
+          }
+        }
+      }
+
+      return items;
+    } catch (e) {
+      erroredSources.push(source);
+      console.log(`Error with ${source.feedUrl}`, e);
+      return undefined;
+    }
+  }),
+);
+
+const items = sortBy(
+  result.filter((r): r is FeedItemType[] => r !== undefined).flat(),
+  (item) => new Date(item.date),
+).reverse();
+const generatedAt = new Date();
+---
+
+<Layout title="News">
+  <meta name="description" content="News from my favourite websites" />
+  <meta property="og:title" content="News" />
+  <meta property="og:site_name" content="squeaki.sh" />
+  <meta property="og:description" content="News from my favourite websites" />
+  <meta name="twitter:title" content="News" />
+  <meta name="twitter:description" content="News from my favourite websites" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <script type="module" src="https://unpkg.com/@joinbox/relative-time@latest"></script>
+</Layout>
+
+<div class="pre" style={isBefore(new Date(), subHours(new Date(), 1)) ? 'color: red;' : undefined}>
+  updated{' '}
+  <relative-time data-time={generatedAt.toISOString()}>
+    at {format(generatedAt, 'p')}
+  </relative-time>
+</div>
+
+{items.map((item) => <FeedItem source={keyBy(sources, 'id')[item.sourceId]} item={item} />)}
+
+{
+  erroredSources.length > 0 && (
+    <div class="post">
+      Errored sources:
+      <ul>
+        {erroredSources.map((source) => (
+          <li>
+            <a href={source.websiteUrl}>{source.title}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+<style>
+  .pre,
+  .post {
+    text-align: center;
+    font-size: var(--font-size-xx-small);
+    color: var(--color-txt--subtle);
+  }
+
+  .post ul,
+  .post li {
+    display: inline;
+    margin: 0;
+    padding: 0;
+  }
+
+  .post li ~ .post li::before {
+    content: ', ';
+  }
+</style>

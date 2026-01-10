@@ -1,0 +1,165 @@
+@charset "utf-8";
+
+:root {
+  --font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  --font-family--mono:
+    'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, 'Roboto Mono', Courier, monospace;
+
+  --font-size-base: 11px;
+  --font-size-xx-small: 1.1rem;
+  --font-size-x-small: 1.2rem;
+  --font-size-small: 1.4rem;
+  --font-size-medium: 1.6rem;
+  --font-size-large: 1.8rem;
+  --font-size-x-large: 2.4rem;
+  --font-size-xx-large: 3.4rem;
+
+  --base-space: 1.25em;
+  --half-space: calc(var(--base-space) / 2);
+  --quarter-space: calc(var(--base-space) / 4);
+  --double-space: calc(var(--base-space) * 2);
+
+  --rgb-white: 255, 255, 255;
+  --rgb-almost-black: 35, 28, 51;
+  --rgb-almost-white: 236, 233, 230;
+  --rgb-blue: 0, 116, 228;
+
+  --rgb-ink: var(--rgb-almost-black);
+  --rgb-background: var(--rgb-white);
+
+  --color-txt: rgb(var(--rgb-ink));
+  --color-txt--action: rgb(var(--rgb-blue));
+  --color-txt--subtle: rgba(var(--rgb-ink), 0.66);
+
+  --color-accent: rgb(var(--rgb-blue));
+  --color-border: rgba(var(--rgb-ink), 0.15);
+
+  accent-color: var(--color-accent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --rgb-almost-black: 27, 39, 51;
+    --rgb-blue: 80, 162, 255;
+    --rgb-background: var(--rgb-almost-black);
+    --rgb-ink: var(--rgb-almost-white);
+  }
+}
+
+@media (min-width: 60em) {
+  :root {
+    --font-size-xx-small: 1.2rem;
+    --font-size-x-small: 1.4rem;
+    --font-size-small: 1.6rem;
+    --font-size-medium: 1.8rem;
+    --font-size-large: 2rem;
+    --font-size-x-large: 2.8rem;
+    --font-size-xx-large: 4rem;
+  }
+}
+
+html {
+  background: rgb(var(--rgb-background));
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: 1.4;
+  -webkit-text-size-adjust: 100%;
+  color: var(--color-txt);
+}
+
+body {
+  font-size: var(--font-size-medium);
+  max-width: 64rem;
+  padding: var(--double-space) var(--base-space) 6.4rem;
+  margin: env(safe-area-inset-top) auto env(safe-area-inset-bottom) auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
+  line-height: 1;
+}
+
+h4,
+h5,
+h6 {
+  color: var(--color-txt--subtle);
+}
+
+a {
+  color: var(--color-txt--action);
+  word-wrap: break-word;
+  text-decoration: underline;
+}
+
+hr {
+  border: 0;
+  height: 0;
+  max-width: 100px;
+  border-bottom: 1px solid var(--color-border);
+  margin: var(--base-space) auto;
+}
+
+::-webkit-input-placeholder {
+  color: var(--color-txt--subtle);
+}
+
+::-moz-placeholder {
+  color: var(--color-txt--subtle);
+}
+
+:-ms-input-placeholder {
+  color: var(--color-txt--subtle);
+}
+
+:-moz-placeholder {
+  color: var(--color-txt--subtle);
+}
+
+.post-content p {
+  margin: 0 0 var(--base-space);
+}
+
+.post-content hr {
+  margin: var(--double-space) auto;
+}
+
+.post-content blockquote {
+  margin: var(--base-space) 0;
+  padding-left: 5rem;
+  position: relative;
+  font-weight: 300;
+}
+
+.post-content blockquote:before {
+  position: absolute;
+  left: 0;
+  top: -1rem;
+  color: #ccc;
+  content: '\201C';
+  font-size: 10rem;
+  line-height: 1;
+}
+
+.post-content blockquote p {
+  display: inline;
+}
+
+svg {
+  fill: inherit;
+}
+
+code {
+  font-family: var(--font-family--mono);
+  font-size: 0.9em;
+  display: inline;
+  background: rgba(var(--rgb-blue), 0.1);
+  padding: 0 0.2em;
+  border-radius: 3px;
+}

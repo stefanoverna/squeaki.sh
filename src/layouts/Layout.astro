@@ -1,0 +1,43 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+}
+
+const { title = 'squeaki.sh' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta
+      name="description"
+      content="I'm Stefano Verna, the Founder and CEO of DatoCMS. Here I pen down my thoughts on business, society, programming, personal life, and whatever else is on my mind."
+    />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="RSS Feed for squeaki.sh"
+      href="/rss.xml"
+    />
+    <link rel="me" href="https://mastodon.social/@steffoz" />
+    <link rel="me" href="https://github.com/stefanoverna" />
+    <link rel="webmention" href="https://webmention.io/squeaki.sh/webmention" />
+    <link rel="pingback" href="https://webmention.io/squeaki.sh/xmlrpc" />
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+  </head>
+  <body>
+    <slot />
+    <span class="h-card" style="display: none">
+      <a class="p-name u-url" href="https://squeaki.sh">Stefano Verna</a>
+      <img class="u-photo" src="https://squeaki.sh/photo.png" alt="Avatar" />
+      <p class="p-note">
+        <a href="https://www.datocms.com">DatoCMS</a> CEO
+      </p>
+    </span>
+  </body>
+</html>

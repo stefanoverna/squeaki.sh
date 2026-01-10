@@ -1,0 +1,19 @@
+---
+import { datocms } from '~/lib/datocms';
+import { BlogPostEntriesQuery } from './_sub/BlogPostPage/_graphql';
+import { BlogPostPage } from './_sub/BlogPostPage';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const { entries } = await datocms(BlogPostEntriesQuery);
+
+  return entries.map((entry) => ({
+    params: { slug: entry.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+---
+
+<BlogPostPage slug={slug!} locale="en" />

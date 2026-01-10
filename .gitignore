@@ -1,0 +1,41 @@
+# build output
+dist/
+.output/
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# environment variables
+.env
+.env*.local
+
+# macOS-specific files
+.DS_Store
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# temporary files
+*.tmp
+
+# GraphQL schema (auto-generated)
+schema.graphql
+
+# TypeScript
+*.tsbuildinfo
+
+# SvelteKit source (reference only)
+svelte-version/
+
+# Claude
+.claude/

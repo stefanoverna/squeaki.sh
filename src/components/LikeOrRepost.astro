@@ -1,0 +1,24 @@
+---
+import MentionAuthorAvatar from './MentionAuthorAvatar.astro';
+
+interface Mention {
+  data: {
+    url: string;
+    author: {
+      photo?: string | null;
+      name: string;
+    };
+  };
+}
+
+interface Props {
+  mention: Mention;
+}
+
+const { mention } = Astro.props;
+const { url, author } = mention.data;
+---
+
+<a href={url} rel="noopener noreferrer" title={author.name} target="_blank">
+  <MentionAuthorAvatar author={author} width={24} height={24} />
+</a>

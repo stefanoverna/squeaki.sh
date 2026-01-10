@@ -1,0 +1,36 @@
+---
+import { type FragmentOf, readFragment } from '~/lib/datocms/graphql';
+import { VideoPlayer as ReactVideoPlayer } from 'react-datocms';
+import type { ComponentProps } from 'astro/types';
+import { VideoPlayerFragment } from './graphql';
+
+interface Props extends Omit<ComponentProps<typeof ReactVideoPlayer>, 'data'> {
+  data: FragmentOf<typeof VideoPlayerFragment>;
+}
+
+const { data, ...rest } = Astro.props;
+
+const unmaskedData = readFragment(VideoPlayerFragment, data);
+---
+
+{
+  /*
+    This component is a wrapper for the <VideoPlayer />` component provided by
+    react-datocms, optimized for use with graphql.tada. We define the necessary
+    GraphQL fragment for this component to function only once, then reuse it
+    wherever needed.
+
+    The `client:visible` prop is used to ensure that the component loads and
+    hydrates once the component has entered the user’s viewport.
+  */
+}
+
+<div>
+  {unmaskedData.video.alt}
+  <ReactVideoPlayer
+    {...rest}
+    data={unmaskedData.video}
+    accentColor="var(--accent-color)"
+    client:visible
+  />
+</div>

@@ -1,0 +1,20 @@
+---
+interface Props {
+  text?: string;
+}
+
+const { text = 'squeaki.sh' } = Astro.props;
+---
+
+<p><a href="/">{text}</a></p>
+
+<style>
+  p a {
+    display: block;
+    text-align: center;
+    text-decoration: unset;
+    color: unset;
+    font-weight: bold;
+    font-size: var(--font-size-x-large);
+  }
+</style>

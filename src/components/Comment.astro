@@ -1,0 +1,96 @@
+---
+import MentionAuthorAvatar from './MentionAuthorAvatar.astro';
+import { format } from 'date-fns';
+import striptags from 'striptags';
+import truncate from 'just-truncate';
+
+interface Mention {
+  data: {
+    url: string;
+    author: {
+      photo?: string | null;
+      name: string;
+    };
+    content?: string | null;
+    published?: string | null;
+  };
+}
+
+interface Props {
+  mention: Mention;
+}
+
+const { mention } = Astro.props;
+const { url, author, content, published } = mention.data;
+const truncatedContent = truncate(
+  striptags(content || '', ['strong', 'b', 'em', 'i', 'code']),
+  200,
+);
+const contentHtml = truncatedContent;
+---
+
+<q>
+  <div set:html={contentHtml} />
+
+  <div class="footer">
+    <a href={url} rel="noopener noreferrer" title={author.name} target="_blank">
+      <cite>
+        <MentionAuthorAvatar author={author} width={20} height={20} />
+        {author.name}
+      </cite>
+      {
+        published && (
+          <>
+            — <time datetime={published}>{format(new Date(published), 'PPP')}</time>
+          </>
+        )
+      }
+    </a>
+  </div>
+</q>
+
+<style>
+  q {
+    display: block;
+    font-size: var(--font-size-small);
+    margin: var(--base-space) 0;
+    padding-left: 3rem;
+    position: relative;
+    font-weight: 300;
+  }
+
+  q:after {
+    display: none;
+  }
+
+  q:before {
+    position: absolute;
+    left: 0;
+    top: -1rem;
+    color: #ccc;
+    content: '\201C';
+    font-size: 6rem;
+    line-height: 1;
+  }
+
+  .footer {
+    color: var(--color-txt--subtle);
+    font-size: var(--font-size-x-small);
+    margin-top: var(--half-space);
+  }
+
+  cite {
+    font-style: normal;
+    display: flex;
+    gap: 3px;
+    align-items: center;
+  }
+
+  a {
+    display: flex;
+    text-decoration: none;
+    color: inherit;
+    align-items: center;
+    gap: 10px;
+  }
+</style>
