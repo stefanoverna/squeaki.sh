@@ -9,6 +9,7 @@ import { DatoImage } from '~/components/DatoImage';
 import { DatoVideo } from '~/components/DatoVideo';
 import Logo from '~/components/Logo.astro';
 import Bio from '~/components/Bio.astro';
+import CodeNode from '~/components/CodeNode.astro';
 import Form from '~/components/Form.astro';
 import Comment from '~/components/Comment.astro';
 import LikeOrRepost from '~/components/LikeOrRepost.astro';
@@ -108,6 +109,7 @@ const mastodonUrl = blogPost.mastodonUrl;
               VideoRecord: DatoVideo,
             },
           })}
+          nodeOverrides={{ code: CodeNode }}
         />
       </div>
       <span style="display: none" class="p-author h-card">
@@ -258,5 +260,12 @@ const mastodonUrl = blogPost.mastodonUrl;
   .post-image {
     max-width: 100%;
     height: auto;
+  }
+
+  :global(.astro-code) {
+    font-size: 0.8em;
+    letter-spacing: -0.01em;
+    padding: 15px;
+    border-radius: 10px;
   }
 </style>

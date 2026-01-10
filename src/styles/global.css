@@ -155,7 +155,7 @@ svg {
   fill: inherit;
 }
 
-code {
+code:not(pre code) {
   font-family: var(--font-family--mono);
   font-size: 0.9em;
   display: inline;

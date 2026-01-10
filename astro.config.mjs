@@ -1,6 +1,5 @@
 import cloudflare from '@astrojs/cloudflare';
 import react from '@astrojs/react';
-import expressiveCode from 'astro-expressive-code';
 import { defineConfig, envField } from 'astro/config';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -42,13 +41,6 @@ export default defineConfig({
   },
   integrations: [
     react(),
-    expressiveCode({
-      themes: ['dracula'],
-      styleOverrides: {
-        borderRadius: '5px',
-        fontSize: '0.8em',
-      },
-    }),
   ],
   adapter: cloudflare({ imageService: 'compile' }),
   security: {
