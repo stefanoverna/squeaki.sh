@@ -147,7 +147,7 @@ export const POST: APIRoute = async ({ request }) => {
             }
           },
         }),
-        post_url: `https://squeaki.sh/p/${blogPost.slug}`,
+        post_url: `https://squeaki.sh/p/${blogPost.slug}/`,
       };
 
       return emails.map<Models.TemplatedMessage>((email) => ({

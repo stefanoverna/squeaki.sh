@@ -45,7 +45,7 @@ export const GET: APIRoute = async () => {
     item.appendChild(createElement(doc, 'title', blogPost.title));
     item.appendChild(createElement(doc, 'description', description));
     item.appendChild(createElement(doc, 'pubDate', pubDate));
-    item.appendChild(createElement(doc, 'link', `https://squeaki.sh/p/${blogPost.slug}`));
+    item.appendChild(createElement(doc, 'link', `https://squeaki.sh/p/${blogPost.slug}/`));
     channel.appendChild(item);
   }
 

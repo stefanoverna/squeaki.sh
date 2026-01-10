@@ -31,10 +31,22 @@ export type Mentions = {
   links: Mention[];
 };
 
-export async function fetchMentions(targetUrl: string) {
+async function fetchMentionsForUrl(targetUrl: string): Promise<Mention[]> {
   const url = `https://webmention.io/api/mentions.json?${new URLSearchParams({ target: targetUrl, 'per-page': '100' }).toString()}`;
   const response = await fetch(url);
   const body = (await response.json()) as Mentions;
   const mentions = body.links.filter((mention) => Boolean(mention.data.author));
   return JSON.parse(JSON.stringify(mentions).replace(/\?{4}/g, '')) as Mention[];
+}
+
+export async function fetchMentions(targetUrl: string) {
+  const withTrailingSlash = targetUrl.endsWith('/') ? targetUrl : `${targetUrl}/`;
+  const withoutTrailingSlash = targetUrl.endsWith('/') ? targetUrl.slice(0, -1) : targetUrl;
+
+  const [mentionsWithSlash, mentionsWithoutSlash] = await Promise.all([
+    fetchMentionsForUrl(withTrailingSlash),
+    fetchMentionsForUrl(withoutTrailingSlash),
+  ]);
+
+  return [...mentionsWithSlash, ...mentionsWithoutSlash];
 }

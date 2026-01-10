@@ -46,7 +46,7 @@ export default defineConfig({
   security: {
     checkOrigin: false,
   },
-  trailingSlash: 'never',
+  trailingSlash: 'always',
   vite: {
     plugins: [rawFonts(['.otf'])],
     assetsInclude: ['**/*.wasm'],

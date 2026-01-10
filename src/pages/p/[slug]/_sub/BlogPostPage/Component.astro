@@ -32,7 +32,7 @@ if (!blogPost) {
   return Astro.redirect('/404');
 }
 
-const webmentions = await fetchMentions(`https://squeaki.sh/p/${slug}`);
+const webmentions = await fetchMentions(`https://squeaki.sh/p/${slug}/`);
 
 const description = truncate(toPlainText(blogPost.content.value as Document) || '', 200).replace(
   /\n/g,
@@ -47,7 +47,7 @@ const alternateVersion = blogPost._locales.includes(alternateLocale)
       locale: alternateLocale,
       name: alternateLocaleName,
       url:
-        alternateLocale === 'en' ? `/p/${blogPost.slug}` : `/p/${blogPost.slug}/${alternateLocale}`,
+        alternateLocale === 'en' ? `/p/${blogPost.slug}/` : `/p/${blogPost.slug}/${alternateLocale}/`,
     }
   : undefined;
 
@@ -75,14 +75,14 @@ const mastodonUrl = blogPost.mastodonUrl;
   <meta property="og:title" content={blogPost.title} />
   <meta property="og:image" content={`https://squeaki.sh/p/${blogPost.slug}/card.png`} />
   <meta property="og:site_name" content="squeaki.sh" />
-  <meta property="og:url" content={`https://squeaki.sh/p/${blogPost.slug}`} />
+  <meta property="og:url" content={`https://squeaki.sh/p/${blogPost.slug}/`} />
   <meta property="og:description" content={description} />
   <meta property="fediverse:creator" content="@steffoz@mastodon.social" />
   <meta name="twitter:title" content={blogPost.title} />
   <meta name="twitter:description" content={description} />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content={`https://squeaki.sh/p/${blogPost.slug}/card.png`} />
-  <meta name="twitter:url" content={`https://squeaki.sh/p/${blogPost.slug}`} />
+  <meta name="twitter:url" content={`https://squeaki.sh/p/${blogPost.slug}/`} />
 
   <header>
     <Logo />
@@ -120,7 +120,7 @@ const mastodonUrl = blogPost.mastodonUrl;
           <a href="https://www.datocms.com">DatoCMS</a> CEO
         </p>
       </span>
-      <a style="display: none" class="u-url" href={`https://squeaki.sh/p/${blogPost.slug}`}> # </a>
+      <a style="display: none" class="u-url" href={`https://squeaki.sh/p/${blogPost.slug}/`}> # </a>
     </article>
 
     {

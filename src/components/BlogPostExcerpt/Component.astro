@@ -27,7 +27,7 @@ const contentText = toPlainText(content.value as any) || '';
     <h2 class="p-name">{title}</h2>
   </header>
   <div class="p-summary">{truncate(contentText, 400)}</div>
-  <a href={`/p/${slug}`} class="u-url">Read more</a>
+  <a href={`/p/${slug}/`} class="u-url">Read more</a>
 </article>
 
 <style>
