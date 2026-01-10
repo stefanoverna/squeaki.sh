@@ -3,7 +3,7 @@ import type { APIRoute } from 'astro';
 import { render as toPlainText } from 'datocms-structured-text-to-plain-text';
 import truncate from 'just-truncate';
 import { datocms } from '~/lib/datocms';
-import { FeedQuery } from './_graphql';
+import { FeedQuery } from './_rss_graphql';
 
 export const prerender = true;
 
@@ -58,9 +58,6 @@ export const GET: APIRoute = async () => {
 
   return new Response(rss, {
     status: 200,
-    headers: {
-      'Content-Type': 'application/xml',
-      'Cache-Control': 'public, max-age=60',
-    },
+    headers: { 'Content-Type': 'application/xml', 'Cache-Control': 'public, max-age=60' },
   });
 };
