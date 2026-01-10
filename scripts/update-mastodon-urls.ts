@@ -20,14 +20,14 @@ function findSlugs(content: string) {
 }
 
 async function run() {
-  const { DATOCMS_READWRITE_API_TOKEN } = process.env;
+  const { PRIVATE_DATOCMS_READWRITE_API_TOKEN } = process.env;
 
-  if (!DATOCMS_READWRITE_API_TOKEN) {
-    throw new Error('Missing DATOCMS_READWRITE_API_TOKEN!');
+  if (!PRIVATE_DATOCMS_READWRITE_API_TOKEN) {
+    throw new Error('Missing PRIVATE_DATOCMS_READWRITE_API_TOKEN!');
   }
 
   const datoClient = buildClient({
-    apiToken: DATOCMS_READWRITE_API_TOKEN,
+    apiToken: PRIVATE_DATOCMS_READWRITE_API_TOKEN,
   });
 
   const mastodonPosts = await fetchMastodonPosts();

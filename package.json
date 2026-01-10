@@ -7,13 +7,13 @@
     "dev": "astro dev",
     "dev:wrangler": "npm run build && wrangler pages dev ./dist",
     "build": "npm run update-mastodon-urls && dotenv -e .env -- astro build",
-    "build:ci": "npm run build && curl -n -X POST $DATOCMS_BUILD_TRIGGER_WEBHOOK -H 'Content-Type: application/json' -d '{ \"status\": \"success\" }'",
+    "build:ci": "npm run build && curl -n -X POST $PRIVATE_DATOCMS_BUILD_TRIGGER_WEBHOOK -H 'Content-Type: application/json' -d '{ \"status\": \"success\" }'",
     "preview": "wrangler pages dev ./dist",
     "check": "astro check",
     "format": "npx prettier . --write",
     "send-webmentions": "webmention dist/rss.xml --limit 1 --send",
     "update-mastodon-urls": "dotenv -e .env -- tsx ./scripts/update-mastodon-urls.ts",
-    "generate-schema": "dotenv -e .env -c -- bash -c 'gql.tada generate schema https://graphql.datocms.com --header \"X-Exclude-Invalid: true\" --header \"Authorization: $DATOCMS_API_TOKEN\" && gql-tada generate output'"
+    "generate-schema": "dotenv -e .env -c -- bash -c 'gql.tada generate schema https://graphql.datocms.com --header \"X-Exclude-Invalid: true\" --header \"Authorization: $PRIVATE_DATOCMS_READONLY_API_TOKEN\" && gql-tada generate output'"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.6",

@@ -1,9 +1,9 @@
 import { buildClient } from '@datocms/cma-client';
 import type { APIRoute } from 'astro';
 import {
-  DATOCMS_READWRITE_API_TOKEN,
-  NEWSLETTER_SEND_API_TOKEN,
-  POSTMARK_SERVER_TOKEN,
+  PRIVATE_DATOCMS_READWRITE_API_TOKEN,
+  PRIVATE_NEWSLETTER_SEND_API_TOKEN,
+  PRIVATE_POSTMARK_SERVER_TOKEN,
 } from 'astro:env/server';
 import { render as toHtml } from 'datocms-structured-text-to-html-string';
 import { render as toPlainText } from 'datocms-structured-text-to-plain-text';
@@ -14,7 +14,7 @@ import { graphql } from '~/lib/datocms/graphql';
 import { baseMessage } from '~/lib/utils/newsletter';
 
 const datoClient = buildClient({
-  apiToken: DATOCMS_READWRITE_API_TOKEN,
+  apiToken: PRIVATE_DATOCMS_READWRITE_API_TOKEN,
 });
 
 const query = graphql(/* GraphQL */ `
@@ -99,7 +99,7 @@ export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    if (request.headers.get('authorization') !== `Bearer ${NEWSLETTER_SEND_API_TOKEN}`) {
+    if (request.headers.get('authorization') !== `Bearer ${PRIVATE_NEWSLETTER_SEND_API_TOKEN}`) {
       return new Response(JSON.stringify({ status: 'error', message: 'Invalid request!' }), {
         status: 401,
       });
@@ -166,7 +166,7 @@ export const POST: APIRoute = async ({ request }) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Postmark-Server-Token': POSTMARK_SERVER_TOKEN,
+        'X-Postmark-Server-Token': PRIVATE_POSTMARK_SERVER_TOKEN,
       },
       body: JSON.stringify({
         Messages: messages,

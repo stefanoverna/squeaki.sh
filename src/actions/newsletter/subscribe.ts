@@ -2,15 +2,15 @@ import { ApiError, buildClient } from '@datocms/cma-client';
 import { z } from 'astro/zod';
 import { ActionError, defineAction } from 'astro:actions';
 import {
-  DATOCMS_READWRITE_API_TOKEN,
-  POSTMARK_SERVER_TOKEN,
-  TURNSTILE_SECRET_KEY,
+  PRIVATE_DATOCMS_READWRITE_API_TOKEN,
+  PRIVATE_POSTMARK_SERVER_TOKEN,
+  PRIVATE_TURNSTILE_SECRET_KEY,
 } from 'astro:env/server';
 import type { Models } from 'postmark';
 import { SUBSCRIBER_MODEL_ID } from '~/lib/utils/constants';
 import { baseMessage } from '~/lib/utils/newsletter';
 
-const client = buildClient({ apiToken: DATOCMS_READWRITE_API_TOKEN });
+const client = buildClient({ apiToken: PRIVATE_DATOCMS_READWRITE_API_TOKEN });
 
 async function deleteSuppression(email: string) {
   const response = await fetch(
@@ -19,7 +19,7 @@ async function deleteSuppression(email: string) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Postmark-Server-Token': POSTMARK_SERVER_TOKEN,
+        'X-Postmark-Server-Token': PRIVATE_POSTMARK_SERVER_TOKEN,
       },
       body: JSON.stringify({
         Suppressions: [
@@ -45,7 +45,7 @@ async function sendConfirmation(email: string) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-Postmark-Server-Token': POSTMARK_SERVER_TOKEN,
+      'X-Postmark-Server-Token': PRIVATE_POSTMARK_SERVER_TOKEN,
     },
     body: JSON.stringify(message),
   });
@@ -54,7 +54,7 @@ async function sendConfirmation(email: string) {
 
 async function verifyChallenge(challenge: string, ip: string) {
   const formData = new FormData();
-  formData.append('secret', TURNSTILE_SECRET_KEY);
+  formData.append('secret', PRIVATE_TURNSTILE_SECRET_KEY);
   formData.append('response', challenge);
   formData.append('remoteip', ip);
 
@@ -92,7 +92,7 @@ export const subscribe = defineAction({
     }
 
     try {
-      console.log(DATOCMS_READWRITE_API_TOKEN);
+      console.log(PRIVATE_DATOCMS_READWRITE_API_TOKEN);
       await client.items.create({
         email: input.email,
         item_type: { type: 'item_type', id: SUBSCRIBER_MODEL_ID },

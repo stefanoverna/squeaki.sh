@@ -8,39 +8,34 @@ import path from 'node:path';
 export default defineConfig({
   env: {
     schema: {
-      DATOCMS_API_TOKEN: envField.string({
+      PRIVATE_DATOCMS_READONLY_API_TOKEN: envField.string({
         context: 'server',
         access: 'secret',
       }),
-      DATOCMS_READWRITE_API_TOKEN: envField.string({
+      PRIVATE_DATOCMS_READWRITE_API_TOKEN: envField.string({
         context: 'server',
         access: 'secret',
       }),
-      DATOCMS_BUILD_TRIGGER_WEBHOOK: envField.string({
+      PRIVATE_DATOCMS_BUILD_TRIGGER_WEBHOOK: envField.string({
         context: 'server',
         access: 'secret',
         optional: true,
       }),
-      POSTMARK_SERVER_TOKEN: envField.string({
+      PRIVATE_POSTMARK_SERVER_TOKEN: envField.string({
         context: 'server',
         access: 'secret',
       }),
-      POSTMARK_WEBHOOK_API_TOKEN: envField.string({
+      PRIVATE_POSTMARK_WEBHOOK_API_TOKEN: envField.string({
         context: 'server',
         access: 'secret',
       }),
-      NEWSLETTER_SEND_API_TOKEN: envField.string({
+      PRIVATE_NEWSLETTER_SEND_API_TOKEN: envField.string({
         context: 'server',
         access: 'secret',
       }),
-      TURNSTILE_SECRET_KEY: envField.string({
+      PRIVATE_TURNSTILE_SECRET_KEY: envField.string({
         context: 'server',
         access: 'secret',
-      }),
-      PUBLIC_SITE_URL: envField.string({
-        context: 'client',
-        access: 'public',
-        optional: true,
       }),
     },
     validateSecrets: true,

@@ -1,10 +1,13 @@
-import { DATOCMS_READWRITE_API_TOKEN, POSTMARK_WEBHOOK_API_TOKEN } from 'astro:env/server';
-import { ErrorWithStatus, handleErrors } from '~/lib/utils/apiResponses';
-import { SUBSCRIBER_MODEL_ID } from '~/lib/utils/constants';
 import { buildClient } from '@datocms/cma-client';
 import type { APIRoute } from 'astro';
+import {
+  PRIVATE_DATOCMS_READWRITE_API_TOKEN,
+  PRIVATE_POSTMARK_WEBHOOK_API_TOKEN,
+} from 'astro:env/server';
+import { ErrorWithStatus, handleErrors } from '~/lib/utils/apiResponses';
+import { SUBSCRIBER_MODEL_ID } from '~/lib/utils/constants';
 
-const client = buildClient({ apiToken: DATOCMS_READWRITE_API_TOKEN });
+const client = buildClient({ apiToken: PRIVATE_DATOCMS_READWRITE_API_TOKEN });
 
 type WebhookResponse = {
   RecordType: 'SubscriptionChange';
@@ -19,7 +22,7 @@ export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    if (request.headers.get('authorization') !== `Bearer ${POSTMARK_WEBHOOK_API_TOKEN}`) {
+    if (request.headers.get('authorization') !== `Bearer ${PRIVATE_POSTMARK_WEBHOOK_API_TOKEN}`) {
       throw new ErrorWithStatus(401, 'Invalid request!');
     }
 
