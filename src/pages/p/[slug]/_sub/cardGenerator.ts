@@ -1,39 +1,16 @@
-import { initWasm, Resvg } from '@resvg/resvg-wasm';
 import { render as toPlainText } from 'datocms-structured-text-to-plain-text';
-import { readFileSync } from 'fs';
-import { dirname, join } from 'path';
+import type { Document } from 'datocms-structured-text-utils';
 import { readingTime } from 'reading-time-estimator';
-import satori from 'satori';
-import { html } from 'satori-html';
-import { fileURLToPath } from 'url';
+import { ImageResponse } from 'workers-og';
 import { datocms } from '~/lib/datocms';
 import { graphql } from '~/lib/datocms/graphql';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// Initialize WASM module
-let wasmInitialized = false;
-
-async function ensureWasmInitialized() {
-  if (!wasmInitialized) {
-    const wasmUrl = new URL('@resvg/resvg-wasm/index_bg.wasm', import.meta.url);
-    await initWasm(wasmUrl);
-    wasmInitialized = true;
-  }
-}
-
-function getFonts() {
-  // From src/pages/p/[slug]/, go up 3 levels to src/, then into lib/fonts/
-  const boldFont = readFileSync(join(__dirname, '../../../lib/fonts/Geist-Bold.otf'));
-  const mediumFont = readFileSync(join(__dirname, '../../../lib/fonts/Geist-Medium.otf'));
-  return { boldFont, mediumFont };
-}
+import GeistBoldData from './fonts/Geist-Bold.otf';
+import GeistMediumData from './fonts/Geist-Medium.otf';
 
 export async function generateCardImage(slug: string, locale: string = 'en'): Promise<Response> {
-  await ensureWasmInitialized();
-
-  const { boldFont, mediumFont } = getFonts();
+  // Font data is now properly loaded as Uint8Array by the rawFonts plugin
+  const GeistBold = (GeistBoldData as any).buffer || GeistBoldData;
+  const GeistMedium = (GeistMediumData as any).buffer || GeistMediumData;
 
   const query = graphql(/* GraphQL */ `
     query BlogPostCard($slug: String!, $locale: SiteLocale) {
@@ -55,52 +32,41 @@ export async function generateCardImage(slug: string, locale: string = 'en'): Pr
     return new Response('not found', { status: 404 });
   }
 
-  const { text } = readingTime(toPlainText((blogPost as any).content.value as any) || '');
+  const { text } = readingTime(toPlainText(blogPost.content.value as Document) || '');
 
-  const markup = html`
+  const html = `
     <div
-      style="display: flex; flex-direction: column; padding: 30px 40px; background: white; height: 100%; border-bottom: 10px solid #0074e4;"
+      style="display: flex; flex-direction: column; padding: 51px 68px; background: white; height: 100%; border-bottom: 17px solid #0074e4;"
     >
-      <div style="display: flex">
-        <span
-          style="background: #d6ebff; color: #344651; text-transform: uppercase; font-size: 13px; padding: 5px; border-radius: 5px;"
-        >
+      <div style="display: flex;">
+        <span style="background: #d6ebff; color: #344651; text-transform: uppercase; font-size: 25px; padding: 9px; border-radius: 9px;">
           ${text}
         </span>
       </div>
-      <div
-        style="font-size: 55px; flex-grow: 1; font-weight: 800; align-items: center; letter-spacing: -0.05em; line-height: 1;"
-      >
-        ${(blogPost as any).title}
+      <div style="display: flex; font-size: 94px; flex-grow: 1; font-weight: 800; align-items: center; letter-spacing: -0.08em; line-height: 1;">
+        ${blogPost.title}
       </div>
-      <div style="font-size: 20px; font-weight: 600; color: #0074e4; letter-spacing: -0.04em;">
+      <div style="display: flex; font-size: 34px; font-weight: 600; color: #0074e4; letter-spacing: -0.07em;">
         squeaki.sh
       </div>
     </div>
   `;
 
-  const svg = await satori(markup as any, {
-    width: 1200,
-    height: 630,
+  return new ImageResponse(html, {
+    width: 1000,
+    height: 530,
     fonts: [
-      { name: 'Geist', data: boldFont, weight: 800 },
-      { name: 'Geist', data: mediumFont, weight: 600 },
+      {
+        name: 'Geist',
+        data: GeistBold,
+        weight: 800,
+      },
+      {
+        name: 'Geist',
+        data: GeistMedium,
+        weight: 600,
+      },
     ],
-  });
-
-  // Use resvg-wasm
-  const resvg = new Resvg(svg, {
-    font: {
-      fontBuffers: [boldFont, mediumFont],
-    },
-  });
-  const pngData = resvg.render();
-  const pngBuffer = pngData.asPng();
-
-  return new Response(Buffer.from(pngBuffer), {
-    headers: {
-      'content-type': 'image/png',
-      'cache-control': 'public, max-age=31536000, immutable',
-    },
+    debug: false,
   });
 }

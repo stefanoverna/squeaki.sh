@@ -1,7 +1,9 @@
-import { defineConfig, envField } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
-import expressiveCode from 'astro-expressive-code';
 import react from '@astrojs/react';
+import expressiveCode from 'astro-expressive-code';
+import { defineConfig, envField } from 'astro/config';
+import fs from 'node:fs';
+import path from 'node:path';
 
 export default defineConfig({
   env: {
@@ -53,14 +55,51 @@ export default defineConfig({
       },
     }),
   ],
-  adapter: cloudflare(),
+  adapter: cloudflare({ imageService: 'compile' }),
   security: {
     checkOrigin: false,
   },
   trailingSlash: 'never',
   vite: {
+    plugins: [rawFonts(['.otf'])],
+    assetsInclude: ['**/*.wasm'],
     ssr: {
-      external: ['fs', 'path', 'url', 'child_process', 'stream'],
+      noExternal: ['workers-og'],
+    },
+    assetsExclude: ['**/*.otf'],
+    resolve: {
+      // Use react-dom/server.edge instead of react-dom/server.browser for React 19.
+      // Without this, MessageChannel from node:worker_threads needs to be polyfilled.
+      alias: import.meta.env.PROD && {
+        'react-dom/server': 'react-dom/server.edge',
+      },
     },
   },
 });
+
+function rawFonts(extensions) {
+  return {
+    name: 'vite-plugin-raw-fonts',
+    enforce: 'pre',
+    resolveId(id, importer) {
+      if (extensions.some((ext) => id.includes(ext))) {
+        if (id.startsWith('.')) {
+          const resolvedPath = path.resolve(path.dirname(importer), id);
+          return resolvedPath;
+        }
+        return id;
+      }
+    },
+    load(id) {
+      if (extensions.some((ext) => id.includes(ext))) {
+        try {
+          const buffer = fs.readFileSync(id);
+          return `export default new Uint8Array([${Array.from(buffer).join(',')}]);`;
+        } catch (error) {
+          console.error('Error loading font:', error.message);
+          throw error;
+        }
+      }
+    },
+  };
+}
