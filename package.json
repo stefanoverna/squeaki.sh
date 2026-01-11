@@ -8,7 +8,6 @@
     "dev:wrangler": "npm run build && wrangler pages dev ./dist",
     "build": "npm run update-mastodon-urls && dotenv -e .env -- astro build",
     "build:ci": "npm run build && curl -n -X POST $PRIVATE_DATOCMS_BUILD_TRIGGER_WEBHOOK -H 'Content-Type: application/json' -d '{ \"status\": \"success\" }'",
-    "preview": "wrangler pages dev ./dist",
     "check": "astro check",
     "format": "npx prettier . --write",
     "send-webmentions": "webmention dist/rss.xml --limit 1 --send",
