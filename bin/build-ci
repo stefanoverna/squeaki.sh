@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# Cloudflare Pages Build Script
+# This is the build command configured in Cloudflare Pages for CI/CD deployments
+#
+# Steps:
+# 1. Runs the standard build process (npm run build)
+# 2. Sends a POST request to DatoCMS build trigger webhook with success status
+#    This notifies DatoCMS that the deployment completed successfully, which can
+#    trigger any post-deployment hooks or update deployment status in DatoCMS
+#
+# Environment variables required:
+# - PRIVATE_DATOCMS_BUILD_TRIGGER_WEBHOOK: The webhook URL to notify DatoCMS
+
+set -e  # Exit immediately if a command exits with a non-zero status
+
+# Run the build
+npm run build
+
+# Notify DatoCMS that the build was successful
+curl -n -X POST "$PRIVATE_DATOCMS_BUILD_TRIGGER_WEBHOOK" \
+  -H 'Content-Type: application/json' \
+  -d '{ "status": "success" }'

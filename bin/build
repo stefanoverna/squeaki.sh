@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# Build Script
+# This script runs the full build process for the site
+#
+# Steps:
+# 1. Updates Mastodon URLs in the content (fetches latest post URLs I wrote from Mastodon)
+# 2. Runs the Astro build process to generate the static site
+#
+# Environment variables required (loaded from .env):
+# - PRIVATE_DATOCMS_READONLY_API_TOKEN: DatoCMS API token for fetching content
+# - Other Mastodon/API credentials as needed by update-mastodon-urls script
+
+set -e  # Exit immediately if a command exits with a non-zero status
+
+# Update Mastodon URLs in content
+dotenv -e .env -- tsx ./scripts/update-mastodon-urls.ts
+
+# Build the site
+dotenv -e .env -- astro build

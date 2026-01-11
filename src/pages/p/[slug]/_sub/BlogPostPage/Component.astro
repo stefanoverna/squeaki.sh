@@ -47,7 +47,9 @@ const alternateVersion = blogPost._locales.includes(alternateLocale)
       locale: alternateLocale,
       name: alternateLocaleName,
       url:
-        alternateLocale === 'en' ? `/p/${blogPost.slug}/` : `/p/${blogPost.slug}/${alternateLocale}/`,
+        alternateLocale === 'en'
+          ? `/p/${blogPost.slug}/`
+          : `/p/${blogPost.slug}/${alternateLocale}/`,
     }
   : undefined;
 

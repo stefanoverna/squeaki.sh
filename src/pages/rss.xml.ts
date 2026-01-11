@@ -1,7 +1,6 @@
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import type { APIRoute } from 'astro';
-import { render as toPlainText } from 'datocms-structured-text-to-plain-text';
-import truncate from 'just-truncate';
+import { blogPostToHtmlString } from '~/lib/blog-post-html';
 import { datocms } from '~/lib/datocms';
 import { FeedQuery } from './_rss_graphql';
 
@@ -36,14 +35,13 @@ export const GET: APIRoute = async () => {
   channel.appendChild(createElement(doc, 'copyright', 'All rights reserved, Stefano Verna'));
 
   for (const blogPost of blogPosts) {
-    const content = blogPost.content.value as any;
-    const description = truncate(toPlainText(content) || '', 400);
+    const htmlContent = blogPostToHtmlString(blogPost.content);
     const pubDate = new Date(blogPost._firstPublishedAt!).toUTCString();
 
     const item = doc.createElement('item');
     item.appendChild(createElement(doc, 'guid', blogPost.id));
     item.appendChild(createElement(doc, 'title', blogPost.title));
-    item.appendChild(createElement(doc, 'description', description));
+    item.appendChild(createElement(doc, 'description', htmlContent));
     item.appendChild(createElement(doc, 'pubDate', pubDate));
     item.appendChild(createElement(doc, 'link', `https://squeaki.sh/p/${blogPost.slug}/`));
     channel.appendChild(item);

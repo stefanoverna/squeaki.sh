@@ -1,0 +1,14 @@
+name: Rebuild
+on:
+  # Triggers the workflow every 30 minutes
+  schedule:
+    - cron: '*/30 * * * *'
+
+  # Can be run manually
+  workflow_dispatch:
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Launch rebuild
+        run: curl -X POST https://api.cloudflare.com/client/v4/pages/webhooks/deploy_hooks/${{ secrets.DEPLOY_HOOK_ID }}

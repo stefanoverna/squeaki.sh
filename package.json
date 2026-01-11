@@ -6,12 +6,13 @@
   "scripts": {
     "dev": "astro dev",
     "dev:wrangler": "npm run build && wrangler pages dev ./dist",
-    "build": "npm run update-mastodon-urls && dotenv -e .env -- astro build",
-    "build:ci": "npm run build && curl -n -X POST $PRIVATE_DATOCMS_BUILD_TRIGGER_WEBHOOK -H 'Content-Type: application/json' -d '{ \"status\": \"success\" }'",
+    "build": "./bin/build",
+    "build:ci": "./bin/build-ci",
     "check": "astro check",
     "format": "npx prettier . --write",
-    "send-webmentions": "webmention dist/rss.xml --limit 1 --send",
-    "update-mastodon-urls": "dotenv -e .env -- tsx ./scripts/update-mastodon-urls.ts",
+    "lint": "npm run check && npm run format",
+    "prepare": "husky install",
+    "send-webmentions": "./bin/send-webmentions",
     "generate-schema": "dotenv -e .env -c -- bash -c 'gql.tada generate schema https://graphql.datocms.com --header \"X-Exclude-Invalid: true\" --header \"Authorization: $PRIVATE_DATOCMS_READONLY_API_TOKEN\" && gql-tada generate output'"
   },
   "dependencies": {
@@ -44,6 +45,7 @@
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^25.0.5",
     "dotenv-cli": "^11.0.0",
+    "husky": "^8.0.0",
     "jsdom": "^24.0.0",
     "prettier": "^3.7.4",
     "prettier-plugin-astro": "^0.14.1",

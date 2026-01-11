@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# Send Webmentions Script
+# This script sends webmentions from the RSS feed to notify other sites when they're mentioned
+#
+# Webmentions are a standard for notifying websites when you link to them.
+# This script reads the RSS feed and sends notifications for new links.
+#
+# Options:
+# --limit 1: Only process one new mention per run (prevents flooding)
+# --send: Actually send the webmentions (without this flag, it runs in dry-run mode)
+
+set -e  # Exit immediately if a command exits with a non-zero status
+
+# Send webmentions from the RSS feed
+webmention dist/rss.xml --limit 1 --send

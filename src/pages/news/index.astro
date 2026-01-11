@@ -100,7 +100,7 @@ const generatedAt = new Date();
   <meta name="twitter:title" content="News" />
   <meta name="twitter:description" content="News from my favourite websites" />
   <meta name="twitter:card" content="summary_large_image" />
-  <script type="module" src="https://unpkg.com/@joinbox/relative-time@latest"></script>
+  <script is:inline type="module" src="https://unpkg.com/@joinbox/relative-time@latest"></script>
 </Layout>
 
 <div class="pre" style={isBefore(new Date(), subHours(new Date(), 1)) ? 'color: red;' : undefined}>

@@ -39,9 +39,7 @@ export default defineConfig({
     },
     validateSecrets: true,
   },
-  integrations: [
-    react(),
-  ],
+  integrations: [react()],
   adapter: cloudflare({ imageService: 'compile' }),
   security: {
     checkOrigin: false,
