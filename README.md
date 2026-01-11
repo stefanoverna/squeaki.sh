@@ -40,6 +40,12 @@ Semantic HTML classes (h-card, h-entry, h-feed) that make website content machin
 - Full RSS 2.0 feed at `/rss.xml`, styled with XSL for human-readable viewing.
 - Autodiscoverable and used for automated webmention sending.
 
+#### Feed Reader
+
+- Aggregates and displays RSS/Atom feeds from favorite websites at `/news`.
+- Fetches content from multiple sources stored in DatoCMS.
+- Updates automatically with each scheduled rebuild (every 30 minutes).
+
 ### Content & Newsletter
 
 - **Multilingual support** (English and Italian) with DatoCMS Structured Text.
@@ -81,12 +87,5 @@ The blog is deployed to **Cloudflare Pages** with an automated build schedule:
 4. **Sync & Notify:** On the next build, the site automatically syncs Mastodon interactions and sends out webmentions to any sites you linked to.
 
 ---
-
-## Credits
-
-- Built with love using Astro and DatoCMS.
-- Hosted on Cloudflare Pages.
-- IndieWeb integration powered by webmention.io and Brid.gy.
-- Part of the open, decentralized web.
 
 Made with ❤️ for the IndieWeb community
