@@ -1,21 +1,7 @@
 ---
 import { differenceInDays, format, formatRelative } from 'date-fns';
 import { upperFirst } from 'lodash-es';
-
-interface Source {
-  id: string;
-  title: string;
-  websiteUrl: string;
-  feedUrl: string;
-}
-
-interface FeedItem {
-  sourceId: string;
-  title: string;
-  date: string;
-  url: string;
-  description: string;
-}
+import type { FeedItem, Source } from './_utils';
 
 interface Props {
   item: FeedItem;
@@ -50,7 +36,15 @@ const displayDate = formatDate(item.date);
     </header>
     <h3>{item.title}</h3>
     {item.description && <div class="description" set:html={item.description} />}
-    <time datetime={item.date}>{displayDate}</time>
+    {item.image && <img class="feed-image" src={item.image} alt="" />}
+    <div class="meta">
+      <time datetime={item.date}>{displayDate}</time>
+      {
+        item.readingTimeMinutes > 0 && (
+          <span class="reading-time">{item.readingTimeMinutes} min read</span>
+        )
+      }
+    </div>
   </div>
   <a class="borders" href={item.url} target="_blank">Read article</a>
 </article>
@@ -135,6 +129,9 @@ const displayDate = formatDate(item.date);
   }
 
   header {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
     font-size: var(--font-size-small);
     margin: 0 0 var(--quarter-space);
     color: var(--color-txt--subtle);
@@ -159,10 +156,20 @@ const displayDate = formatDate(item.date);
     }
   }
 
-  time {
-    display: block;
+  .meta {
+    display: flex;
+    gap: 1em;
     color: var(--color-txt--subtle);
     font-size: var(--font-size-x-small);
     margin-top: var(--half-space);
+  }
+
+  .feed-image {
+    display: block;
+    max-height: 200px;
+    width: auto;
+    border-radius: 10px;
+    margin-top: var(--half-space);
+    max-width: 100%;
   }
 </style>

@@ -1,0 +1,81 @@
+---
+import { format } from 'date-fns';
+import type { FeedItem } from './_utils';
+
+interface Props {
+  item: FeedItem;
+}
+
+const { item } = Astro.props;
+
+function formatDateCompact(date: string) {
+  try {
+    const d = new Date(date);
+    const now = new Date();
+    const isToday = d.toDateString() === now.toDateString();
+    return isToday ? format(d, 'p') : format(d, 'P');
+  } catch {
+    return '???';
+  }
+}
+
+const displayDate = formatDateCompact(item.date);
+---
+
+<a class="compact-item" href={item.url} target="_blank">
+  <span class="compact-content">
+    <span class="compact-title">{item.title}</span>
+    {item.description && <span class="compact-description"> — {item.description}</span>}
+  </span>
+  <time datetime={item.date}>{displayDate}</time>
+</a>
+
+<style>
+  .compact-item {
+    display: flex;
+    gap: 0.75em;
+    align-items: baseline;
+    padding: 0.5em var(--half-space);
+    font-size: var(--font-size-small);
+    color: var(--color-txt);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(var(--rgb-ink), 0.1);
+  }
+
+  .compact-item:last-child {
+    border-bottom: none;
+  }
+
+  .compact-item:hover {
+    background: rgba(var(--rgb-ink), 0.03);
+  }
+
+  .compact-content {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .compact-description {
+    color: var(--color-txt--subtle);
+  }
+
+  .compact-item:link {
+    color: var(--color-txt);
+  }
+
+  .compact-item:visited {
+    color: #999;
+  }
+
+  .compact-item:visited .compact-description {
+    color: #bbb;
+  }
+
+  .compact-item time {
+    flex-shrink: 0;
+    font-size: var(--font-size-xx-small);
+    color: var(--color-txt--subtle);
+  }
+</style>

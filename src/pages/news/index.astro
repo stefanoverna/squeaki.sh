@@ -1,95 +1,16 @@
 ---
-import { datocms } from '~/lib/datocms';
-import { graphql } from '~/lib/datocms/graphql';
 import Layout from '~/layouts/Layout.astro';
 import FeedItem from './_FeedItem.astro';
-import truncate from 'just-truncate';
-import { keyBy, sortBy } from 'lodash-es';
-import striptags from 'striptags';
+import CompactFeedItem from './_CompactFeedItem.astro';
+import { keyBy } from 'lodash-es';
 import { format, isBefore, subHours } from 'date-fns';
-import { parseFeed } from 'feedsmith';
+import { fetchFeeds, groupItemsBySource } from './_utils';
 
 export const prerender = true;
 
-const query = graphql(/* GraphQL */ `
-  query Feeds {
-    sources: allRssFeeds(first: 100) {
-      id
-      title
-      feedUrl
-      websiteUrl
-    }
-  }
-`);
-
-const { sources } = await datocms(query);
-
-const erroredSources: typeof sources = [];
-
-type FeedItemType = {
-  sourceId: string;
-  title: string;
-  date: string;
-  url: string;
-  description: string;
-};
-
-const result = await Promise.all(
-  sources.map(async (source) => {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-
-      const response = await fetch(source.feedUrl, { signal: controller.signal });
-      clearTimeout(timeoutId);
-      const text = await response.text();
-      const feed = parseFeed(text);
-
-      console.log('Parsing', source.feedUrl);
-
-      const items: FeedItemType[] = [];
-
-      if (feed.format === 'rss') {
-        for (const item of feed.feed.items || []) {
-          const title = item.title || item.guid?.value;
-          const date = item.pubDate;
-          const url = item.link;
-          const description = truncate(
-            striptags(item.description || item.content?.encoded || ''),
-            400,
-          );
-
-          if (title && date && url) {
-            items.push({ sourceId: source.id, title, date, url, description });
-          }
-        }
-      } else if (feed.format === 'atom') {
-        for (const item of feed.feed.entries || []) {
-          const title = item.title;
-          const date = item.published || item.updated;
-          const url = item.links?.[0]?.href;
-          const description = truncate(striptags(item.content || item.summary || ''), 400);
-
-          if (title && date && url) {
-            items.push({ sourceId: source.id, title, date, url, description });
-          }
-        }
-      }
-
-      return items;
-    } catch (e) {
-      erroredSources.push(source);
-      console.log(`Error with ${source.feedUrl}`, e);
-      return undefined;
-    }
-  }),
-);
-
-const items = sortBy(
-  result.filter((r): r is FeedItemType[] => r !== undefined).flat(),
-  (item) => new Date(item.date),
-).reverse();
-const generatedAt = new Date();
+const { sources, items, erroredSources, generatedAt } = await fetchFeeds();
+const groupedItems = groupItemsBySource(items);
+const sourcesById = keyBy(sources, 'id');
 ---
 
 <Layout title="News">
@@ -110,7 +31,20 @@ const generatedAt = new Date();
   </relative-time>
 </div>
 
-{items.map((item) => <FeedItem source={keyBy(sources, 'id')[item.sourceId]} item={item} />)}
+{
+  groupedItems.map((group) => (
+    <div class="feed-group">
+      <FeedItem source={sourcesById[group.main.sourceId]} item={group.main} />
+      {group.additional.length > 0 && (
+        <div class="additional-items">
+          {group.additional.map((item) => (
+            <CompactFeedItem item={item} />
+          ))}
+        </div>
+      )}
+    </div>
+  ))
+}
 
 {
   erroredSources.length > 0 && (
@@ -127,7 +61,31 @@ const generatedAt = new Date();
   )
 }
 
+<div class="sources" id="sources">
+  <h3>Sources</h3>
+  <ul>
+    {
+      sources.map((source) => (
+        <li>
+          <a href={source.websiteUrl}>{source.title}</a>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
 <style>
+  .feed-group {
+    margin-bottom: var(--base-space);
+  }
+
+  .additional-items {
+    margin: 0 0 0 var(--base-space);
+    background: rgba(var(--rgb-ink), 0.02);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
   .pre,
   .post {
     text-align: center;
@@ -144,5 +102,33 @@ const generatedAt = new Date();
 
   .post li ~ .post li::before {
     content: ', ';
+  }
+
+  .sources {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: var(--font-size-xx-small);
+    color: var(--color-txt--subtle);
+  }
+
+  .sources h3 {
+    font-size: var(--font-size-small);
+    margin: 0 0 1.5rem;
+  }
+
+  .sources ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.25rem 1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sources li {
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 </style>
