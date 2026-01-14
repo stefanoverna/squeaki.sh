@@ -36,7 +36,7 @@ export async function generateCardImage(slug: string, locale: string = 'en'): Pr
 
   const html = `
     <div
-      style="display: flex; flex-direction: column; padding: 51px 68px; background: white; height: 100%; border-bottom: 17px solid #0074e4;"
+      style="display: flex; flex-direction: column; padding: 51px 68px; background: white; border-bottom: 17px solid #0074e4; width: 1200px; height: 630px;"
     >
       <div style="display: flex;">
         <span style="background: #d6ebff; color: #344651; text-transform: uppercase; font-size: 25px; padding: 9px; border-radius: 9px;">
@@ -53,8 +53,8 @@ export async function generateCardImage(slug: string, locale: string = 'en'): Pr
   `;
 
   return new ImageResponse(html, {
-    width: 1000,
-    height: 530,
+    width: 1200,
+    height: 630,
     fonts: [
       {
         name: 'Geist',
@@ -67,6 +67,6 @@ export async function generateCardImage(slug: string, locale: string = 'en'): Pr
         weight: 600,
       },
     ],
-    debug: false,
+    debug: true,
   });
 }

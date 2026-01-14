@@ -44,7 +44,8 @@ export default defineConfig({
   security: {
     checkOrigin: false,
   },
-  trailingSlash: 'always',
+  // issues with card.png?
+  // trailingSlash: 'always',
   vite: {
     plugins: [rawFonts(['.otf'])],
     assetsInclude: ['**/*.wasm'],
