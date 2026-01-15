@@ -1,13 +1,27 @@
 import { differenceInDays, format, formatRelative } from 'date-fns';
+import { enUS } from 'date-fns/locale';
 import { upperFirst } from 'lodash-es';
 import styles from './FeedItemCard.module.css';
 import type { FeedItem, Source } from '../utils';
 
+const formatRelativeLocale: Record<string, string> = {
+  lastWeek: "'Last' eeee",
+  yesterday: "'Yesterday'",
+  today: "'Today'",
+  tomorrow: "'Tomorrow'",
+  nextWeek: 'eeee',
+  other: 'MMM do',
+};
+
 function formatDate(date: string) {
   try {
     return differenceInDays(new Date(), date) > 6
-      ? format(date, 'PPP')
-      : upperFirst(formatRelative(date, new Date()));
+      ? format(date, 'MMM do')
+      : upperFirst(
+          formatRelative(date, new Date(), {
+            locale: { ...enUS, formatRelative: (token) => formatRelativeLocale[token] },
+          }),
+        );
   } catch {
     return '???';
   }
@@ -60,7 +74,7 @@ export function FeedItemCard({
         <div className={styles.meta}>
           <time dateTime={item.date}>{formatDate(item.date)}</time>
           {item.readingTimeMinutes > 0 && (
-            <span className={styles.readingTime}>{item.readingTimeMinutes} min read</span>
+            <span className={styles.readingTime}>{item.readingTimeMinutes} min</span>
           )}
           {onMarkRead && (
             <span className={styles.actions}>

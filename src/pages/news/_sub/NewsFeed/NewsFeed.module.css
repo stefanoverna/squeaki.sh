@@ -10,10 +10,15 @@
 }
 
 .additionalItems {
-  margin: 0 0 0 var(--base-space);
   background: rgba(var(--rgb-ink), 0.02);
   border-radius: 5px;
   overflow: hidden;
+}
+
+@media (min-width: 600px) {
+  .additionalItems {
+    margin-left: var(--base-space);
+  }
 }
 
 .pre,

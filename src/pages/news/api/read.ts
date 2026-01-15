@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { PRIVATE_NEWS_TOKEN } from 'astro:env/server';
 import { ErrorWithStatus, handleErrors } from '~/lib/utils/apiResponses';
 
-const MAX_READ_ITEMS = 2000;
+const MAX_READ_ITEMS = 5000;
 const KV_KEY = 'read-items';
 
 export const prerender = false;
