@@ -18,6 +18,11 @@ const query = graphql(/* GraphQL */ `
   }
 `);
 
+export async function fetchSources(): Promise<Source[]> {
+  const { sources } = await datocms(query);
+  return sources;
+}
+
 export type FeedItem = {
   id: string;
   sourceId: string;

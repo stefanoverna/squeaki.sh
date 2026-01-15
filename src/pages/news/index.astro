@@ -1,8 +1,11 @@
 ---
 import Layout from '~/layouts/Layout.astro';
 import { NewsFeed } from './_sub/NewsFeed/NewsFeed';
+import { fetchSources } from './_sub/utils';
 
 export const prerender = true;
+
+const sources = await fetchSources();
 ---
 
 <Layout title="News">
@@ -17,3 +20,46 @@ export const prerender = true;
 </Layout>
 
 <NewsFeed client:only="react" />
+
+<div class="sources" id="sources">
+  <h3>Sources</h3>
+  <ul>
+    {
+      sources.map((source) => (
+        <li>
+          <a href={source.websiteUrl}>{source.title}</a>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .sources {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: var(--font-size-xx-small);
+    color: var(--color-txt--subtle);
+  }
+
+  .sources h3 {
+    font-size: var(--font-size-small);
+    margin: 0 0 1.5rem;
+  }
+
+  .sources ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.25rem 1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sources li {
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>

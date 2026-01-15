@@ -18,10 +18,10 @@ export function CompactFeedItem({
   onMarkRead,
 }: {
   item: FeedItem;
-  onMarkRead: (id: string) => void;
+  onMarkRead?: (id: string) => void;
 }) {
   const handleClick = () => {
-    onMarkRead(item.id);
+    onMarkRead?.(item.id);
   };
 
   return (
@@ -38,7 +38,21 @@ export function CompactFeedItem({
           <span className={styles.compactDescription}> — {item.description}</span>
         )}
       </span>
-      <time dateTime={item.date}>{formatDateCompact(item.date)}</time>
+      {onMarkRead ? (
+        <button
+          type="button"
+          className={styles.markRead}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onMarkRead(item.id);
+          }}
+        >
+          <time dateTime={item.date}>{formatDateCompact(item.date)}</time>
+        </button>
+      ) : (
+        <time dateTime={item.date}>{formatDateCompact(item.date)}</time>
+      )}
     </a>
   );
 }

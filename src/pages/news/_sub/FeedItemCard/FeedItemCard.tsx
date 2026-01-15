@@ -16,11 +16,15 @@ function formatDate(date: string) {
 export function FeedItemCard({
   item,
   source,
+  additionalItemIds = [],
   onMarkRead,
+  onMarkAllRead,
 }: {
   item: FeedItem;
   source: Source;
-  onMarkRead: (id: string) => void;
+  additionalItemIds?: string[];
+  onMarkRead?: (id: string) => void;
+  onMarkAllRead?: (ids: string[]) => void;
 }) {
   const faviconUrl = `https://s2.googleusercontent.com/s2/favicons?${new URLSearchParams({
     domain: source.websiteUrl,
@@ -28,11 +32,17 @@ export function FeedItemCard({
   }).toString()}`;
 
   const handleClick = () => {
-    onMarkRead(item.id);
+    onMarkRead?.(item.id);
   };
 
   return (
-    <article className={styles.feedItem}>
+    <a
+      className={styles.feedItem}
+      href={item.url}
+      target="_blank"
+      rel="noreferrer"
+      onClick={handleClick}
+    >
       <div className={styles.overlay} style={{ backgroundImage: `url(${faviconUrl})` }} />
       <div className={styles.inner}>
         <header className={styles.header}>
@@ -52,17 +62,34 @@ export function FeedItemCard({
           {item.readingTimeMinutes > 0 && (
             <span className={styles.readingTime}>{item.readingTimeMinutes} min read</span>
           )}
+          {onMarkRead && (
+            <span className={styles.actions}>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onMarkRead(item.id);
+                }}
+              >
+                Mark read
+              </button>
+              {onMarkAllRead && additionalItemIds.length > 0 && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onMarkAllRead([item.id, ...additionalItemIds]);
+                  }}
+                >
+                  Mark all read
+                </button>
+              )}
+            </span>
+          )}
         </div>
       </div>
-      <a
-        className={styles.borders}
-        href={item.url}
-        target="_blank"
-        rel="noreferrer"
-        onClick={handleClick}
-      >
-        Read article
-      </a>
-    </article>
+    </a>
   );
 }

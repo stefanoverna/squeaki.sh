@@ -63,6 +63,23 @@ export function NewsFeed() {
     [token],
   );
 
+  const markAllAsRead = useCallback(
+    (ids: string[]) => {
+      if (!token) return;
+
+      // Optimistically update UI
+      setReadIds((prev) => new Set([...prev, ...ids]));
+
+      // Send to server (fire and forget)
+      fetch(`/news/api/read?token=${encodeURIComponent(token)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids }),
+      }).catch(console.error);
+    },
+    [token],
+  );
+
   if (loading) {
     return <div className={styles.loading}>Loading...</div>;
   }
@@ -111,11 +128,21 @@ export function NewsFeed() {
 
         return (
           <div className={styles.feedGroup} key={mainItem.id}>
-            <FeedItemCard item={mainItem} source={source} onMarkRead={markAsRead} />
+            <FeedItemCard
+              item={mainItem}
+              source={source}
+              additionalItemIds={additionalItems.map((i) => i.id)}
+              onMarkRead={token ? markAsRead : undefined}
+              onMarkAllRead={token ? markAllAsRead : undefined}
+            />
             {additionalItems.length > 0 && (
               <div className={styles.additionalItems}>
                 {additionalItems.map((item) => (
-                  <CompactFeedItem key={item.id} item={item} onMarkRead={markAsRead} />
+                  <CompactFeedItem
+                    key={item.id}
+                    item={item}
+                    onMarkRead={token ? markAsRead : undefined}
+                  />
                 ))}
               </div>
             )}
@@ -135,17 +162,6 @@ export function NewsFeed() {
           </ul>
         </div>
       )}
-
-      <div className={styles.sources} id="sources">
-        <h3>Sources</h3>
-        <ul>
-          {data.sources.map((source) => (
-            <li key={source.id}>
-              <a href={source.websiteUrl}>{source.title}</a>
-            </li>
-          ))}
-        </ul>
-      </div>
     </>
   );
 }
