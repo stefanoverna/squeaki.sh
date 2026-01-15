@@ -1,0 +1,63 @@
+.loading,
+.error {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-txt--subtle);
+}
+
+.feedGroup {
+  margin-bottom: var(--base-space);
+}
+
+.additionalItems {
+  margin: 0 0 0 var(--base-space);
+  background: rgba(var(--rgb-ink), 0.02);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.pre,
+.post {
+  text-align: center;
+  font-size: var(--font-size-xx-small);
+  color: var(--color-txt--subtle);
+}
+
+.post ul,
+.post li {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+.post li ~ li::before {
+  content: ', ';
+}
+
+.sources {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: var(--font-size-xx-small);
+  color: var(--color-txt--subtle);
+}
+
+.sources h3 {
+  font-size: var(--font-size-small);
+  margin: 0 0 1.5rem;
+}
+
+.sources ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.25rem 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sources li {
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -1,0 +1,118 @@
+/* Feed item styles */
+.feedItem {
+  margin: var(--base-space) 0;
+  border-radius: 5px;
+  position: relative;
+}
+
+.feedItem:hover {
+  box-shadow:
+    0px 0px 3.6px rgba(var(--rgb-ink), 0.014),
+    0px 0px 10px rgba(var(--rgb-ink), 0.02),
+    0px 0px 24.1px rgba(var(--rgb-ink), 0.026),
+    0px 0px 80px rgba(var(--rgb-ink), 0.04);
+}
+
+@media (min-width: 60rem) {
+  .feedItem {
+    margin: var(--half-space) 0;
+  }
+}
+
+.borders {
+  position: absolute;
+  inset: 0;
+  border: 3px solid var(--color-txt--subtle);
+  border-radius: 5px;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  text-indent: -9999px;
+  padding: var(--base-space);
+}
+
+.borders:after {
+  content: 'To read';
+  position: absolute;
+  text-indent: 0;
+  top: 50%;
+  right: 100%;
+  padding-right: var(--double-space);
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  white-space: nowrap;
+  line-height: 1;
+  transform: translateY(-50%);
+  color: var(--color-txt--subtle);
+}
+
+@media (max-width: 60rem) {
+  .borders:after {
+    display: none;
+  }
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.1;
+  background-position: 50% 50%;
+  background-size: cover;
+  border-radius: 5px;
+}
+
+.inner {
+  padding: var(--base-space);
+  backdrop-filter: blur(20px);
+  border-radius: 5px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: var(--font-size-small);
+  margin: 0 0 var(--quarter-space);
+  color: var(--color-txt--subtle);
+}
+
+.title {
+  font-size: var(--font-size-large);
+  margin: 0 0 var(--quarter-space);
+}
+
+.description {
+  font-size: var(--font-size-x-small);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
+}
+
+@media (min-width: 40rem) {
+  .description {
+    -webkit-line-clamp: 3;
+  }
+}
+
+.meta {
+  display: flex;
+  gap: 1em;
+  color: var(--color-txt--subtle);
+  font-size: var(--font-size-x-small);
+  margin-top: var(--half-space);
+}
+
+.readingTime {
+}
+
+.feedImage {
+  display: block;
+  max-height: 200px;
+  width: auto;
+  border-radius: 10px;
+  margin-top: var(--half-space);
+  max-width: 100%;
+}

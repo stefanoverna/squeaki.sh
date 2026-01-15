@@ -1,0 +1,68 @@
+import { differenceInDays, format, formatRelative } from 'date-fns';
+import { upperFirst } from 'lodash-es';
+import styles from './FeedItemCard.module.css';
+import type { FeedItem, Source } from '../utils';
+
+function formatDate(date: string) {
+  try {
+    return differenceInDays(new Date(), date) > 6
+      ? format(date, 'PPP')
+      : upperFirst(formatRelative(date, new Date()));
+  } catch {
+    return '???';
+  }
+}
+
+export function FeedItemCard({
+  item,
+  source,
+  onMarkRead,
+}: {
+  item: FeedItem;
+  source: Source;
+  onMarkRead: (id: string) => void;
+}) {
+  const faviconUrl = `https://s2.googleusercontent.com/s2/favicons?${new URLSearchParams({
+    domain: source.websiteUrl,
+    sz: '16',
+  }).toString()}`;
+
+  const handleClick = () => {
+    onMarkRead(item.id);
+  };
+
+  return (
+    <article className={styles.feedItem}>
+      <div className={styles.overlay} style={{ backgroundImage: `url(${faviconUrl})` }} />
+      <div className={styles.inner}>
+        <header className={styles.header}>
+          <img src={faviconUrl} alt="favicon" width="16" />
+          {source.title}
+        </header>
+        <h3 className={styles.title}>{item.title}</h3>
+        {item.description && (
+          <div
+            className={styles.description}
+            dangerouslySetInnerHTML={{ __html: item.description }}
+          />
+        )}
+        {item.image && <img className={styles.feedImage} src={item.image} alt="" />}
+        <div className={styles.meta}>
+          <time dateTime={item.date}>{formatDate(item.date)}</time>
+          {item.readingTimeMinutes > 0 && (
+            <span className={styles.readingTime}>{item.readingTimeMinutes} min read</span>
+          )}
+        </div>
+      </div>
+      <a
+        className={styles.borders}
+        href={item.url}
+        target="_blank"
+        rel="noreferrer"
+        onClick={handleClick}
+      >
+        Read article
+      </a>
+    </article>
+  );
+}

@@ -36,6 +36,10 @@ export default defineConfig({
         context: 'server',
         access: 'secret',
       }),
+      PRIVATE_NEWS_TOKEN: envField.string({
+        context: 'server',
+        access: 'secret',
+      }),
     },
     validateSecrets: true,
   },

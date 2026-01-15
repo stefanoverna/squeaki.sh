@@ -1,0 +1,43 @@
+/* Compact item styles */
+.compactItem {
+  display: flex;
+  gap: 0.75em;
+  align-items: baseline;
+  padding: 0.5em var(--half-space);
+  font-size: var(--font-size-small);
+  color: var(--color-txt);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(var(--rgb-ink), 0.1);
+}
+
+.compactItem:last-child {
+  border-bottom: none;
+}
+
+.compactItem:hover {
+  background: rgba(var(--rgb-ink), 0.03);
+}
+
+.compactContent {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compactTitle {
+}
+
+.compactDescription {
+  color: var(--color-txt--subtle);
+}
+
+.compactItem:link {
+  color: var(--color-txt);
+}
+
+.compactItem time {
+  flex-shrink: 0;
+  font-size: var(--font-size-xx-small);
+  color: var(--color-txt--subtle);
+}

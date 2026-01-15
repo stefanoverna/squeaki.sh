@@ -5,6 +5,7 @@ import { readingTime } from 'reading-time-estimator';
 import striptags from 'striptags';
 import { datocms } from '~/lib/datocms';
 import { graphql } from '~/lib/datocms/graphql';
+import { cyrb64Hash } from '~/lib/utils/hash';
 
 const query = graphql(/* GraphQL */ `
   query Feeds {
@@ -18,6 +19,7 @@ const query = graphql(/* GraphQL */ `
 `);
 
 export type FeedItem = {
+  id: string;
   sourceId: string;
   title: string;
   date: string;
@@ -91,6 +93,7 @@ export async function fetchFeeds(): Promise<FetchFeedsResult> {
 
             if (title && date && url) {
               items.push({
+                id: cyrb64Hash(url),
                 sourceId: source.id,
                 title,
                 date,
@@ -114,6 +117,7 @@ export async function fetchFeeds(): Promise<FetchFeedsResult> {
 
             if (title && date && url) {
               items.push({
+                id: cyrb64Hash(url),
                 sourceId: source.id,
                 title,
                 date,

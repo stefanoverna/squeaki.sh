@@ -1,16 +1,8 @@
 ---
 import Layout from '~/layouts/Layout.astro';
-import FeedItem from './_FeedItem.astro';
-import CompactFeedItem from './_CompactFeedItem.astro';
-import { keyBy } from 'lodash-es';
-import { format, isBefore, subHours } from 'date-fns';
-import { fetchFeeds, groupItemsBySource } from './_utils';
+import { NewsFeed } from './_sub/NewsFeed/NewsFeed';
 
 export const prerender = true;
-
-const { sources, items, erroredSources, generatedAt } = await fetchFeeds();
-const groupedItems = groupItemsBySource(items);
-const sourcesById = keyBy(sources, 'id');
 ---
 
 <Layout title="News">
@@ -21,114 +13,6 @@ const sourcesById = keyBy(sources, 'id');
   <meta name="twitter:title" content="News" />
   <meta name="twitter:description" content="News from my favourite websites" />
   <meta name="twitter:card" content="summary_large_image" />
-  <script is:inline type="module" src="https://unpkg.com/@joinbox/relative-time@latest"></script>
 </Layout>
 
-<div class="pre" style={isBefore(new Date(), subHours(new Date(), 1)) ? 'color: red;' : undefined}>
-  updated{' '}
-  <relative-time data-time={generatedAt.toISOString()}>
-    at {format(generatedAt, 'p')}
-  </relative-time>
-</div>
-
-{
-  groupedItems.map((group) => (
-    <div class="feed-group">
-      <FeedItem source={sourcesById[group.main.sourceId]} item={group.main} />
-      {group.additional.length > 0 && (
-        <div class="additional-items">
-          {group.additional.map((item) => (
-            <CompactFeedItem item={item} />
-          ))}
-        </div>
-      )}
-    </div>
-  ))
-}
-
-{
-  erroredSources.length > 0 && (
-    <div class="post">
-      Errored sources:
-      <ul>
-        {erroredSources.map((source) => (
-          <li>
-            <a href={source.websiteUrl}>{source.title}</a>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
-}
-
-<div class="sources" id="sources">
-  <h3>Sources</h3>
-  <ul>
-    {
-      sources.map((source) => (
-        <li>
-          <a href={source.websiteUrl}>{source.title}</a>
-        </li>
-      ))
-    }
-  </ul>
-</div>
-
-<style>
-  .feed-group {
-    margin-bottom: var(--base-space);
-  }
-
-  .additional-items {
-    margin: 0 0 0 var(--base-space);
-    background: rgba(var(--rgb-ink), 0.02);
-    border-radius: 5px;
-    overflow: hidden;
-  }
-
-  .pre,
-  .post {
-    text-align: center;
-    font-size: var(--font-size-xx-small);
-    color: var(--color-txt--subtle);
-  }
-
-  .post ul,
-  .post li {
-    display: inline;
-    margin: 0;
-    padding: 0;
-  }
-
-  .post li ~ .post li::before {
-    content: ', ';
-  }
-
-  .sources {
-    margin-top: 2rem;
-    text-align: center;
-    font-size: var(--font-size-xx-small);
-    color: var(--color-txt--subtle);
-  }
-
-  .sources h3 {
-    font-size: var(--font-size-small);
-    margin: 0 0 1.5rem;
-  }
-
-  .sources ul {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 0.25rem 1rem;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .sources li {
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-</style>
+<NewsFeed client:only="react" />

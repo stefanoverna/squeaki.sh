@@ -2,6 +2,7 @@
   "name": "squeakish",
   "compatibility_date": "2025-01-10",
   "pages_build_output_dir": "./dist",
+  "kv_namespaces": [{ "binding": "NEWS_KV", "id": "3ea162ca0ff84920965c46cc172662f1" }],
   "vars": {
     "PRIVATE_DATOCMS_READONLY_API_TOKEN": "",
     "PRIVATE_DATOCMS_READWRITE_API_TOKEN": "",
@@ -10,5 +11,6 @@
     "PRIVATE_POSTMARK_WEBHOOK_API_TOKEN": "",
     "PRIVATE_NEWSLETTER_SEND_API_TOKEN": "",
     "PRIVATE_TURNSTILE_SECRET_KEY": "",
+    "PRIVATE_NEWS_TOKEN": "",
   },
 }
