@@ -36,6 +36,12 @@ export function NewsFeed() {
             setReadIds(new Set(readItems));
           }
         }
+
+        if (window.location.hash === '#sources') {
+          setTimeout(() => {
+            document.getElementById('sources')?.scrollIntoView({ behavior: 'smooth' });
+          }, 1000);
+        }
       } catch (e) {
         setError(e instanceof Error ? e.message : 'Failed to load');
       } finally {
