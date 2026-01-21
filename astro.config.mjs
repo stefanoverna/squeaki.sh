@@ -1,5 +1,5 @@
 import cloudflare from '@astrojs/cloudflare';
-import react from '@astrojs/react';
+import preact from '@astrojs/preact';
 import { defineConfig, envField } from 'astro/config';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -43,7 +43,7 @@ export default defineConfig({
     },
     validateSecrets: true,
   },
-  integrations: [react()],
+  integrations: [preact({ compat: true })],
   adapter: cloudflare({ imageService: 'compile' }),
   security: {
     checkOrigin: false,
@@ -57,13 +57,6 @@ export default defineConfig({
       noExternal: ['workers-og'],
     },
     assetsExclude: ['**/*.otf'],
-    resolve: {
-      // Use react-dom/server.edge instead of react-dom/server.browser for React 19.
-      // Without this, MessageChannel from node:worker_threads needs to be polyfilled.
-      alias: import.meta.env.PROD && {
-        'react-dom/server': 'react-dom/server.edge',
-      },
-    },
   },
 });
 

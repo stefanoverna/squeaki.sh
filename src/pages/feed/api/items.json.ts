@@ -11,7 +11,6 @@ type CachedData = {
   groupedItems: any[];
   erroredSources: any[];
   generatedAt: string;
-  cachedAt: number;
 };
 
 export const GET: APIRoute = async ({ locals }) => {
@@ -20,7 +19,7 @@ export const GET: APIRoute = async ({ locals }) => {
   // Try to get cached data
   const cached = await NEWS_KV.get<CachedData>(KV_KEY, 'json');
 
-  const isStale = cached && Date.now() - cached.cachedAt > CACHE_TTL_MS;
+  const isStale = cached && Date.now() - new Date(cached.generatedAt).getTime() > CACHE_TTL_MS;
 
   // If we have cached data (even if stale), return it immediately
   if (cached) {
@@ -42,7 +41,6 @@ export const GET: APIRoute = async ({ locals }) => {
               groupedItems,
               erroredSources,
               generatedAt: generatedAt.toISOString(),
-              cachedAt: Date.now(),
             };
 
             await NEWS_KV.put(KV_KEY, JSON.stringify(cacheData));
@@ -89,7 +87,6 @@ export const GET: APIRoute = async ({ locals }) => {
   // Cache the result
   const cacheData: CachedData = {
     ...responseData,
-    cachedAt: Date.now(),
   };
 
   await NEWS_KV.put(KV_KEY, JSON.stringify(cacheData));

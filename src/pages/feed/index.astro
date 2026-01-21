@@ -9,7 +9,7 @@ const sources = await fetchSources();
 ---
 
 <Layout title="News">
-  <link rel="preload" href="/news/items.json" as="fetch" crossorigin="anonymous" />
+  <link rel="preload" href="./api/items.json" as="fetch" crossorigin="anonymous" />
   <meta name="description" content="News from my favourite websites" />
   <meta property="og:title" content="News" />
   <meta property="og:site_name" content="squeaki.sh" />
@@ -19,7 +19,7 @@ const sources = await fetchSources();
   <meta name="twitter:card" content="summary_large_image" />
 </Layout>
 
-<NewsFeed client:only="react" />
+<NewsFeed client:only="preact" />
 
 <div class="sources" id="sources">
   <h3>Sources</h3>

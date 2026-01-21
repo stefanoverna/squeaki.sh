@@ -15,13 +15,13 @@ const unmaskedData = readFragment(VideoPlayerFragment, data);
 
 {
   /*
-    This component is a wrapper for the <VideoPlayer />` component provided by
+    This component is a wrapper for the <VideoPlayer /> component provided by
     react-datocms, optimized for use with graphql.tada. We define the necessary
     GraphQL fragment for this component to function only once, then reuse it
     wherever needed.
 
-    The `client:visible` prop is used to ensure that the component loads and
-    hydrates once the component has entered the user’s viewport.
+    The `client:only="preact"` prop is used because react-datocms doesn't work
+    with Preact's server-side rendering. The component will only render on the client.
   */
 }
 
@@ -31,6 +31,6 @@ const unmaskedData = readFragment(VideoPlayerFragment, data);
     {...rest}
     data={unmaskedData.video}
     accentColor="var(--accent-color)"
-    client:visible
+    client:only="preact"
   />
 </div>

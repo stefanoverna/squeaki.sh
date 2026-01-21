@@ -25,12 +25,12 @@ export function NewsFeed() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const itemsRes = await fetch('/news/api/items.json');
+        const itemsRes = await fetch('./api/items.json');
         const itemsData: ItemsResponse = await itemsRes.json();
         setData(itemsData);
 
         if (token) {
-          const readRes = await fetch(`/news/api/read?token=${encodeURIComponent(token)}`);
+          const readRes = await fetch(`./api/read?token=${encodeURIComponent(token)}`);
           if (readRes.ok) {
             const readItems: string[] = await readRes.json();
             setReadIds(new Set(readItems));
@@ -60,7 +60,7 @@ export function NewsFeed() {
       setReadIds((prev) => new Set([...prev, id]));
 
       // Send to server (fire and forget)
-      fetch(`/news/api/read?token=${encodeURIComponent(token)}`, {
+      fetch(`./api/read?token=${encodeURIComponent(token)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids: [id] }),
@@ -77,7 +77,7 @@ export function NewsFeed() {
       setReadIds((prev) => new Set([...prev, ...ids]));
 
       // Send to server (fire and forget)
-      fetch(`/news/api/read?token=${encodeURIComponent(token)}`, {
+      fetch(`./api/read?token=${encodeURIComponent(token)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids }),

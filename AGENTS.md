@@ -15,7 +15,7 @@ squeakish/
 
 ## Tech Stack
 
-**Core:** Astro 5 (SSR + Static), React 19, TypeScript
+**Core:** Astro 5 (SSR + Static), Preact (in compat mode), TypeScript
 **Content:** DatoCMS headless CMS with GraphQL API (gql.tada for type-safe queries)
 **Hosting:** Cloudflare Pages with scheduled rebuilds (daily via GitHub Actions)
 **Services:** Postmark (newsletter), Turnstile (bot protection), webmention.io (social interactions)
@@ -24,7 +24,7 @@ squeakish/
 
 - **DatoCMS is single source of truth** for content. All blog posts, pages, and feed sources live there
 - **Environment variables are strongly typed** via Astro's `envField` schema (astro.config.mjs:8-44)
-- **Scheduled rebuilds daily (midnight UTC)** to sync Mastodon interactions and update news feed
+- **Scheduled rebuilds daily (midnight UTC)** to sync Mastodon interactions and update feed aggregator
 - **GraphQL schema is generated** from DatoCMS - run `npm run generate-schema` after schema changes
 - **Font files (.otf) loaded as raw Uint8Array** via custom Vite plugin for OG image generation
 

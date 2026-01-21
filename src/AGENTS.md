@@ -6,8 +6,9 @@ Application source for squeaki.sh blog. Astro-based SSR/static hybrid with React
 
 ```
 src/
-├── components/       # Reusable UI components (Astro + React)
+├── components/       # Reusable UI components (Astro + Preact)
 ├── pages/           # File-based routing (pages + API endpoints)
+│   └── feed/        # RSS aggregator (see pages/feed/AGENTS.md)
 ├── layouts/         # Page layout templates
 ├── actions/         # Astro actions (form handling)
 ├── lib/             # Utilities and shared logic
@@ -20,7 +21,7 @@ src/
 
 - `pages/index.astro` - Homepage
 - `pages/p/[slug]/[locale]/index.astro` - Blog post pages (multilingual)
-- `pages/news/index.astro` - RSS feed aggregator page
+- `pages/feed/` - RSS feed aggregator (see `pages/feed/AGENTS.md`)
 - `pages/rss.xml.ts` - RSS feed generation
 - `pages/newsletter/` - Newsletter subscription flows
 
@@ -31,8 +32,10 @@ src/
 Components that render DatoCMS content follow a modular pattern:
 
 - `Component.astro` - UI implementation
-- `graphql.ts` - Fragment definitions for DatoCMS queries
+- `graphql.ts` - Fragment definitions (owned by component, never reused)
 - `index.ts` - Re-exports with types
+
+**Fragment Ownership:** Each component must define its own GraphQL fragments, even if fields overlap with other components. This enables fragment masking and prevents coupling between components.
 
 Examples: `BlogPostExcerpt/`, `DatoImage/`, `DatoVideo/`, `VideoPlayer/`
 
@@ -56,12 +59,13 @@ Examples: `BlogPostExcerpt/`, `DatoImage/`, `DatoVideo/`, `VideoPlayer/`
 - `_sub/BlogPostPage/` - Main post component with GraphQL fragments
 - `_sub/cardGenerator.ts` - workers-og based OG image logic
 
-### News Feed (`pages/news/`)
+### Feed Aggregator (`pages/feed/`)
 
-- `index.astro` - RSS aggregator UI
-- `api/items.json.ts` - Fetch and parse RSS feeds from DatoCMS sources
-- `api/read.ts` - Mark items as read (client storage sync)
-- `_sub/` - News feed React components
+**See `pages/feed/AGENTS.md` for complete documentation.**
+
+- RSS/Atom feed parsing with KV caching
+- Read state tracking with token-based auth
+- Stale-while-revalidate pattern for performance
 
 ### Newsletter (`pages/newsletter/`)
 
@@ -107,6 +111,7 @@ Astro actions provide type-safe server functions for forms:
 
 - **All DatoCMS queries must use `lib/datocms.ts` wrapper** - handles pagination, token, draft mode
 - **GraphQL fragments live with components** - co-locate queries with UI (e.g., `DatoImage/graphql.ts`)
+- **Route-specific components go in `_sub/` directories** - if a component is only used by one route, place it in a `_sub/` directory within that route in `src/pages/`. The leading `_` makes Astro ignore it for routing. Once a component is reused elsewhere, move it to `src/components/`
 - **API routes return JSON via `lib/utils/apiResponses.ts`** - consistent response format
 - **Dynamic OG images use workers-og** - loaded fonts as Uint8Array via Vite plugin
 - **Newsletter actions require auth token** - `PRIVATE_NEWSLETTER_SEND_API_TOKEN` check
@@ -117,10 +122,38 @@ Astro actions provide type-safe server functions for forms:
 ### Adding a New DatoCMS Component
 
 1. Create directory in `components/` (e.g., `NewComponent/`)
-2. Add `graphql.ts` with fragment definition
+2. Add `graphql.ts` with **owned fragment definition** (never reuse existing fragments)
 3. Add `Component.astro` with UI implementation
 4. Add `index.ts` to re-export with types
-5. Import fragment in page's `_graphql.ts` to include in queries
+5. Compose fragment in parent query using fragment spreads
+
+**Fragment Ownership Example:**
+
+```typescript
+// components/NewComponent/graphql.ts
+export const NewComponentFragment = graphql(`
+  fragment NewComponentFragment on BlogPost {
+    id
+    title
+  }
+`);
+
+// pages/example/_graphql.ts
+import { NewComponentFragment } from '~/components/NewComponent';
+
+const query = graphql(
+  `
+    query Example {
+      post {
+        ...NewComponentFragment
+      }
+    }
+  `,
+  [NewComponentFragment],
+);
+```
+
+See: https://gql-tada.0no.co/get-started/writing-graphql
 
 ### Adding a New API Endpoint
 
@@ -138,14 +171,15 @@ Astro actions provide type-safe server functions for forms:
 ## Anti-patterns
 
 - Never query DatoCMS directly without `lib/datocms.ts` wrapper
-- Don't duplicate GraphQL fragments - compose via fragment spreads
+- **Don't reuse GraphQL fragments across components** - each component owns its fragments (enables fragment masking)
 - Never expose API tokens in client-side code - use Astro's server context
 - Don't hardcode feed sources - store in DatoCMS and query dynamically
 - Avoid inline styles - use global CSS from `styles/` or Tailwind classes
 
 ## Pitfalls
 
-- **React 19 edge runtime:** Must use `react-dom/server.edge` (configured in astro.config.mjs:63)
+- **Preact in compat mode:** Using `preact/compat` aliased as `react` - some React 19 features unavailable
+- **Edge runtime for Preact:** Must use `react-dom/server.edge` (configured in astro.config.mjs:63)
 - **Draft content in dev:** `includeDrafts` is enabled in dev mode - may see unpublished posts locally
 - **Font loading for OG images:** .otf files must be loaded as Uint8Array, not via standard imports
 - **Cloudflare adapter required:** API routes depend on Cloudflare Pages context
