@@ -29,9 +29,11 @@ const block = readFragment(ImageBlockFragment, maskedBlock);
       </div>
     </div>
   ) : (
-    <a href={block.image.responsiveImage.src} target="_blank">
-      <Image data={block.image.responsiveImage} />
-    </a>
+    <div class="spacer">
+      <a href={block.image.responsiveImage.src} target="_blank">
+        <Image data={block.image.responsiveImage} />
+      </a>
+    </div>
   )
 }
 
