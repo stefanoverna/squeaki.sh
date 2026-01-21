@@ -60,14 +60,13 @@ export type FetchFeedsResult = {
 // Memoization cache for development
 let cachedResult: FetchFeedsResult | null = null;
 
-export async function fetchFeeds(): Promise<FetchFeedsResult> {
+export async function fetchFeeds(sources: Source[]): Promise<FetchFeedsResult> {
   // In development, return cached result if available
   if (import.meta.env.DEV && cachedResult) {
     console.log('Using cached feeds');
     return cachedResult;
   }
 
-  const { sources } = await datocms(query);
   const erroredSources: Source[] = [];
 
   const result = await Promise.all(
@@ -147,9 +146,7 @@ export async function fetchFeeds(): Promise<FetchFeedsResult> {
   const items = sortBy(
     result.filter((r): r is FeedItem[] => r !== undefined).flat(),
     (item) => new Date(item.date),
-  )
-    .reverse()
-    .slice(0, 250);
+  ).reverse();
 
   const fetchResult: FetchFeedsResult = {
     sources,
@@ -157,11 +154,6 @@ export async function fetchFeeds(): Promise<FetchFeedsResult> {
     erroredSources,
     generatedAt: new Date(),
   };
-
-  // Cache result in development
-  if (import.meta.env.DEV) {
-    cachedResult = fetchResult;
-  }
 
   return fetchResult;
 }
