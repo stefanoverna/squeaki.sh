@@ -87,7 +87,7 @@ export function NewsFeed() {
   );
 
   if (loading) {
-    return <div className={styles.loading}>Loading...</div>;
+    return <div className={styles.loading}>Refreshing the feed...</div>;
   }
 
   if (error || !data) {

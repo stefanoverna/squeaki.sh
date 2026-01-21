@@ -1,8 +1,8 @@
 name: Rebuild
 on:
-  # Triggers the workflow every 30 minutes
+  # Triggers the workflow daily at midnight UTC
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '0 0 * * *'
 
   # Can be run manually
   workflow_dispatch:

@@ -44,7 +44,7 @@ Semantic HTML classes (h-card, h-entry, h-feed) that make website content machin
 
 - Aggregates and displays RSS/Atom feeds from favorite websites at `/news`.
 - Fetches content from multiple sources stored in DatoCMS.
-- Updates automatically with each scheduled rebuild (every 30 minutes).
+- Updates automatically with each scheduled rebuild (daily).
 
 ### Content & Newsletter
 
@@ -74,7 +74,7 @@ npm run dev
 
 The blog is deployed to **Cloudflare Pages** with an automated build schedule:
 
-- **Scheduled rebuilds:** Every 30 minutes via GitHub Actions to sync Mastodon URLs and update the News feed.
+- **Scheduled rebuilds:** Daily (midnight UTC) via GitHub Actions to sync Mastodon URLs and update the News feed.
 - **On-demand builds:** Triggered by DatoCMS webhooks.
 
 ---
@@ -82,7 +82,7 @@ The blog is deployed to **Cloudflare Pages** with an automated build schedule:
 ## IndieWeb Workflow
 
 1. **Create and publish** content in DatoCMS.
-2. **Wait for rebuild** (automatic every 30 mins or manual via webhook).
+2. **Wait for rebuild** (automatic daily or manual via webhook).
 3. **Share on Mastodon** with a link to your post.
 4. **Sync & Notify:** On the next build, the site automatically syncs Mastodon interactions and sends out webmentions to any sites you linked to.
 
