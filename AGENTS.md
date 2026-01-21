@@ -31,12 +31,14 @@ squeakish/
 ## IndieWeb Workflows
 
 ### Publishing Content
+
 1. Create/edit content in DatoCMS
 2. Automatic rebuild via webhook OR wait for scheduled build
 3. Share on Mastodon with link to post
 4. Next build syncs Mastodon interactions via Brid.gy
 
 ### Webmention Flow
+
 - **Receiving:** webmention.io collects likes/reposts/comments from other sites
 - **Backfeeding:** Brid.gy bridges Mastodon reactions as webmentions
 - **Sending:** `bin/send-webmentions` parses RSS and notifies linked sites

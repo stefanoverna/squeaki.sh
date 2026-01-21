@@ -27,7 +27,9 @@ src/
 ## Components
 
 ### DatoCMS Components Pattern
+
 Components that render DatoCMS content follow a modular pattern:
+
 - `Component.astro` - UI implementation
 - `graphql.ts` - Fragment definitions for DatoCMS queries
 - `index.ts` - Re-exports with types
@@ -35,6 +37,7 @@ Components that render DatoCMS content follow a modular pattern:
 Examples: `BlogPostExcerpt/`, `DatoImage/`, `DatoVideo/`, `VideoPlayer/`
 
 ### Standalone Components
+
 - `Bio.astro` - Author biography
 - `Comment.astro` - Webmention comment display
 - `Form.astro` - Generic form wrapper
@@ -46,6 +49,7 @@ Examples: `BlogPostExcerpt/`, `DatoImage/`, `DatoVideo/`, `VideoPlayer/`
 ## Pages & Routing
 
 ### Blog Posts (`pages/p/[slug]/`)
+
 - `[locale]/index.astro` - Localized post pages (EN/IT)
 - `[locale]/card.png.ts` - Dynamic OG image generation
 - `index.astro` - Redirect to default locale
@@ -53,28 +57,33 @@ Examples: `BlogPostExcerpt/`, `DatoImage/`, `DatoVideo/`, `VideoPlayer/`
 - `_sub/cardGenerator.ts` - workers-og based OG image logic
 
 ### News Feed (`pages/news/`)
+
 - `index.astro` - RSS aggregator UI
 - `api/items.json.ts` - Fetch and parse RSS feeds from DatoCMS sources
 - `api/read.ts` - Mark items as read (client storage sync)
 - `_sub/` - News feed React components
 
 ### Newsletter (`pages/newsletter/`)
+
 - `subscribe/index.astro` - Subscription form page
 - `api/subscription-change.ts` - Handle Postmark webhook for unsubs
 - `api/send.ts` - Authenticated endpoint to send newsletter via Postmark
 
 ### GraphQL Queries
+
 - `_graphql.ts` - Shared fragments for blog post queries
 - `_rss_graphql.ts` - RSS feed specific queries
 
 ## Actions
 
 Astro actions provide type-safe server functions for forms:
+
 - `actions/newsletter/subscribe.ts` - Newsletter subscription with Turnstile validation
 
 ## Libraries
 
 ### DatoCMS Integration (`lib/datocms/`)
+
 - `datocms.ts` - Main query executor with auto-pagination
   - Uses `@datocms/cda-client` for Content Delivery API
   - Includes drafts in dev mode (`includeDrafts: import.meta.env.DEV`)
@@ -83,6 +92,7 @@ Astro actions provide type-safe server functions for forms:
 - `graphql-env.d.ts` - TypeScript definitions
 
 ### Utilities (`lib/utils/`)
+
 - `webmentions.ts` - Fetch and process webmentions from webmention.io
 - `newsletter.ts` - Postmark integration helpers
 - `apiResponses.ts` - Standard API response builders
@@ -90,6 +100,7 @@ Astro actions provide type-safe server functions for forms:
 - `constants.ts` - Shared constants
 
 ### Content Processing
+
 - `blog-post-html.ts` - Convert DatoCMS Structured Text to HTML
 
 ## Contracts & Invariants
@@ -104,6 +115,7 @@ Astro actions provide type-safe server functions for forms:
 ## Patterns
 
 ### Adding a New DatoCMS Component
+
 1. Create directory in `components/` (e.g., `NewComponent/`)
 2. Add `graphql.ts` with fragment definition
 3. Add `Component.astro` with UI implementation
@@ -111,12 +123,14 @@ Astro actions provide type-safe server functions for forms:
 5. Import fragment in page's `_graphql.ts` to include in queries
 
 ### Adding a New API Endpoint
+
 1. Create file in `pages/*/api/` (e.g., `pages/api/my-endpoint.ts`)
 2. Export GET/POST functions with Astro APIContext
 3. Use `lib/utils/apiResponses.ts` for consistent responses
 4. Add authentication check for sensitive operations
 
 ### Working with Webmentions
+
 - Fetch via `lib/utils/webmentions.ts`
 - Display with `Comment.astro`, `LikeOrRepost.astro`
 - Sending happens at build time via `bin/send-webmentions` script
