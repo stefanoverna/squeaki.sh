@@ -136,6 +136,23 @@ export const GET: APIRoute = async ({ locals }) => {
           erroredSources: cached.erroredSources,
           generatedAt: cached.generatedAt,
           pendingSourceCount: sourcesNeedingUpdate.length,
+          debug: {
+            totalSources: allSources.length,
+            sourcesInCache: Object.keys(cached.sourceMetadata ?? {}).length,
+            pendingSources: sourcesNeedingUpdate.map((s) => ({
+              id: s.id,
+              title: s.title,
+              lastUpdatedAt: cached.sourceMetadata?.[s.id]?.lastUpdatedAt ?? null,
+              errorCount: cached.sourceMetadata?.[s.id]?.errorCount ?? 0,
+              cacheAgeMinutes: cached.sourceMetadata?.[s.id]?.lastUpdatedAt
+                ? Math.round(
+                    (now - new Date(cached.sourceMetadata[s.id].lastUpdatedAt).getTime()) / 60000,
+                  )
+                : null,
+            })),
+            batchSize: BATCH_SIZE,
+            updatingThisCycle: sourcesNeedingUpdate.slice(0, BATCH_SIZE).map((s) => s.title),
+          },
         },
         null,
         2,
