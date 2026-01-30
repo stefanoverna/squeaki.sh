@@ -8,8 +8,8 @@ import {
 } from '../_sub/utils';
 
 const KV_KEY = 'feed-items';
-const CACHE_TTL_MS = 30 * 60 * 1000;
-const BATCH_SIZE = 10; // Number of feeds to update per refresh
+const CACHE_TTL_MS = 60 * 60 * 1000;
+const BATCH_SIZE = 5; // Number of feeds to update per refresh
 
 export const prerender = false;
 

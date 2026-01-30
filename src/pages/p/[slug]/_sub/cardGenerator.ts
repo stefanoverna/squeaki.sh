@@ -1,6 +1,6 @@
 import { render as toPlainText } from 'datocms-structured-text-to-plain-text';
 import type { Document } from 'datocms-structured-text-utils';
-import { readingTime } from 'reading-time-estimator';
+
 import { ImageResponse } from 'workers-og';
 import { datocms } from '~/lib/datocms';
 import { graphql } from '~/lib/datocms/graphql';
@@ -32,17 +32,10 @@ export async function generateCardImage(slug: string, locale: string = 'en'): Pr
     return new Response('not found', { status: 404 });
   }
 
-  const { text } = readingTime(toPlainText(blogPost.content.value as Document) || '');
-
   const html = `
     <div
       style="display: flex; flex-direction: column; padding: 51px 68px; background: white; border-bottom: 17px solid #0074e4; width: 1200px; height: 630px;"
     >
-      <div style="display: flex;">
-        <span style="background: #d6ebff; color: #344651; text-transform: uppercase; font-size: 25px; padding: 9px; border-radius: 9px;">
-          ${text}
-        </span>
-      </div>
       <div style="display: flex; font-size: 94px; flex-grow: 1; font-weight: 800; align-items: center; letter-spacing: -0.08em; line-height: 1;">
         ${blogPost.title}
       </div>

@@ -1,7 +1,7 @@
 import { parseFeed } from 'feedsmith';
 import truncate from 'just-truncate';
 import { sortBy } from 'lodash-es';
-import { readingTime } from 'reading-time-estimator';
+
 import striptags from 'striptags';
 import { datocms } from '~/lib/datocms';
 import { graphql } from '~/lib/datocms/graphql';
@@ -31,7 +31,6 @@ export type FeedItem = {
   url: string;
   description: string;
   image?: string;
-  readingTimeMinutes: number;
 };
 
 function extractFirstImage(html: string): string | undefined {
@@ -93,7 +92,6 @@ export async function fetchFeeds(sources: Source[]): Promise<FetchFeedsResult> {
             const strippedContent = striptags(rawContent);
             const description = truncate(strippedContent, 400);
             const image = extractFirstImage(rawContent);
-            const readingTimeMinutes = readingTime(strippedContent).minutes;
 
             if (title && date && url) {
               items.push({
@@ -104,7 +102,6 @@ export async function fetchFeeds(sources: Source[]): Promise<FetchFeedsResult> {
                 url,
                 description,
                 image,
-                readingTimeMinutes,
               });
             }
           }
@@ -117,7 +114,6 @@ export async function fetchFeeds(sources: Source[]): Promise<FetchFeedsResult> {
             const strippedContent = striptags(rawContent);
             const description = truncate(strippedContent, 400);
             const image = extractFirstImage(rawContent);
-            const readingTimeMinutes = readingTime(strippedContent).minutes;
 
             if (title && date && url) {
               items.push({
@@ -128,7 +124,6 @@ export async function fetchFeeds(sources: Source[]): Promise<FetchFeedsResult> {
                 url,
                 description,
                 image,
-                readingTimeMinutes,
               });
             }
           }

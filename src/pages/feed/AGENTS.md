@@ -90,8 +90,7 @@ DatoCMS (sources) → utils.ts (fetchFeeds) → items.json.ts (caching) → News
 3. Extract items (RSS: `item`, Atom: `entry`)
 4. Generate stable ID via `cyrb64Hash(url)`
 5. Strip HTML tags, truncate description to 400 chars
-6. Calculate reading time with `reading-time-estimator`
-7. Extract first `<img>` tag as preview image
+6. Extract first `<img>` tag as preview image
 
 **Error Handling:** Failed feeds added to `erroredSources`, not thrown
 
@@ -150,7 +149,7 @@ type GroupedItem = {
 
 ### `FeedItemCard.tsx`
 
-**Display:** Expanded card with image, title, description, source, reading time
+**Display:** Expanded card with image, title, description, source
 **Actions:**
 
 - Mark as read (if `onMarkRead` provided)
@@ -158,7 +157,7 @@ type GroupedItem = {
 
 ### `CompactFeedItem.tsx`
 
-**Display:** Minimal row with title and reading time
+**Display:** Minimal row with title
 **Actions:** Mark as read on click
 
 ## Contracts & Invariants

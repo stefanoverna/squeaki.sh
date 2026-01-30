@@ -3,7 +3,7 @@ import { keyBy } from 'lodash-es';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './NewsFeed.module.css';
 
-const POLL_INTERVAL_MS = 10000;
+const POLL_INTERVAL_MS = 5000;
 
 import type { GroupedItem, Source } from '../utils';
 import { FeedItemCard } from '../FeedItemCard/FeedItemCard';

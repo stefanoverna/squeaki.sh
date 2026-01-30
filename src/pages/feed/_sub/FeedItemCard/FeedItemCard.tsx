@@ -73,9 +73,6 @@ export function FeedItemCard({
         {item.image && <img className={styles.feedImage} src={item.image} alt="" />}
         <div className={styles.meta}>
           <time dateTime={item.date}>{formatDate(item.date)}</time>
-          {item.readingTimeMinutes > 0 && (
-            <span className={styles.readingTime}>{item.readingTimeMinutes} min</span>
-          )}
           {onMarkRead && (
             <span className={styles.actions}>
               <button
