@@ -2,6 +2,9 @@ import { formatDistanceToNow } from 'date-fns';
 import { keyBy } from 'lodash-es';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './NewsFeed.module.css';
+
+const POLL_INTERVAL_MS = 3000;
+
 import type { GroupedItem, Source } from '../utils';
 import { FeedItemCard } from '../FeedItemCard/FeedItemCard';
 import { CompactFeedItem } from '../CompactFeedItem/CompactFeedItem';
@@ -45,7 +48,7 @@ export function NewsFeed() {
 
         if (itemsData.pendingSourceCount > 0) {
           setRefreshing(true);
-          timeoutId = setTimeout(poll, 5000);
+          timeoutId = setTimeout(poll, POLL_INTERVAL_MS);
         } else {
           setRefreshing(false);
         }
@@ -85,7 +88,7 @@ export function NewsFeed() {
 
         if (itemsData.pendingSourceCount > 0) {
           setRefreshing(true);
-          timeoutId = setTimeout(poll, 5000);
+          timeoutId = setTimeout(poll, POLL_INTERVAL_MS);
         }
       } catch (e) {
         if (!cancelled) {

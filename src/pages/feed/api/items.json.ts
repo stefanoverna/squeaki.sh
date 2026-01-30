@@ -40,7 +40,7 @@ export const GET: APIRoute = async ({ locals }) => {
   const now = Date.now();
   const sourcesNeedingUpdate = cached
     ? allSources.filter((source) => {
-        const metadata = cached.sourceMetadata[source.id];
+        const metadata = cached.sourceMetadata?.[source.id];
         const lastUpdatedAt = metadata?.lastUpdatedAt
           ? new Date(metadata.lastUpdatedAt).getTime()
           : 0;
@@ -79,7 +79,7 @@ export const GET: APIRoute = async ({ locals }) => {
 
             // Remove old items from these sources
             const updatedSourceIds = new Set(sourcesToUpdate.map((s: Source) => s.id));
-            const remainingItems = cached.items.filter(
+            const remainingItems = (cached.items ?? []).filter(
               (item: FeedItem) => !updatedSourceIds.has(item.sourceId),
             );
 
@@ -89,7 +89,7 @@ export const GET: APIRoute = async ({ locals }) => {
               .slice(0, 250);
 
             // Update source metadata
-            const updatedMetadata = { ...cached.sourceMetadata };
+            const updatedMetadata = { ...(cached.sourceMetadata ?? {}) };
             const updateTime = new Date().toISOString();
 
             for (const source of sourcesToUpdate) {
@@ -103,7 +103,7 @@ export const GET: APIRoute = async ({ locals }) => {
             }
 
             // Update errored sources list
-            const remainingErroredSources = cached.erroredSources.filter(
+            const remainingErroredSources = (cached.erroredSources ?? []).filter(
               (s: Source) => !updatedSourceIds.has(s.id),
             );
             const mergedErroredSources = [...remainingErroredSources, ...newErroredSources];
