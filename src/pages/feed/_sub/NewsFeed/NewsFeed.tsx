@@ -3,7 +3,7 @@ import { keyBy } from 'lodash-es';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './NewsFeed.module.css';
 
-const POLL_INTERVAL_MS = 5000;
+const POLL_INTERVAL_MS = 3000;
 
 import type { GroupedItem, Source } from '../utils';
 import { FeedItemCard } from '../FeedItemCard/FeedItemCard';
@@ -180,7 +180,16 @@ export function NewsFeed() {
     <>
       <div className={styles.pre}>
         updated {formatDistanceToNow(new Date(data.generatedAt), { addSuffix: true })}
-        {refreshing && <span className={styles.spinner} />}
+        {refreshing && (
+          <span
+            className={styles.spinner}
+            style={
+              {
+                '--progress': `${((data.sources.length - data.pendingSourceCount) / data.sources.length) * 100}%`,
+              } as React.CSSProperties
+            }
+          />
+        )}
       </div>
 
       {sortedGroups.map(({ mainItem, additionalItems }) => {
