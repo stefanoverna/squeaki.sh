@@ -1,6 +1,3 @@
-import { render as toPlainText } from 'datocms-structured-text-to-plain-text';
-import type { Document } from 'datocms-structured-text-utils';
-
 import { ImageResponse } from 'workers-og';
 import { datocms } from '~/lib/datocms';
 import { graphql } from '~/lib/datocms/graphql';
