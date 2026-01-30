@@ -1,6 +1,6 @@
 import { formatDistanceToNow } from 'date-fns';
 import { keyBy } from 'lodash-es';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './NewsFeed.module.css';
 import type { GroupedItem, Source } from '../utils';
 import { FeedItemCard } from '../FeedItemCard/FeedItemCard';
@@ -11,29 +11,69 @@ type ItemsResponse = {
   groupedItems: GroupedItem[];
   erroredSources: Source[];
   generatedAt: string;
+  pendingSourceCount: number;
 };
 
 export function NewsFeed() {
   const [data, setData] = useState<ItemsResponse | null>(null);
   const [readIds, setReadIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
 
   const token =
     typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('token') : null;
 
   useEffect(() => {
-    async function fetchData() {
+    let cancelled = false;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+    async function fetchItems(signal: AbortSignal): Promise<ItemsResponse> {
+      const res = await fetch('./api/items.json', { signal });
+      return res.json();
+    }
+
+    async function poll() {
+      if (cancelled) return;
       try {
-        const itemsRes = await fetch('./api/items.json');
-        const itemsData: ItemsResponse = await itemsRes.json();
+        const controller = new AbortController();
+        abortRef.current = controller;
+        const itemsData = await fetchItems(controller.signal);
+        if (cancelled) return;
+        setData(itemsData);
+
+        if (itemsData.pendingSourceCount > 0) {
+          setRefreshing(true);
+          timeoutId = setTimeout(poll, 5000);
+        } else {
+          setRefreshing(false);
+        }
+      } catch (e) {
+        if (cancelled) return;
+        // Don't overwrite error on poll failures after initial load
+        if (!data) {
+          setError(e instanceof Error ? e.message : 'Failed to load');
+        }
+        setRefreshing(false);
+      }
+    }
+
+    async function initialFetch() {
+      try {
+        const controller = new AbortController();
+        abortRef.current = controller;
+        const itemsData = await fetchItems(controller.signal);
+        if (cancelled) return;
         setData(itemsData);
 
         if (token) {
-          const readRes = await fetch(`./api/read?token=${encodeURIComponent(token)}`);
+          const readRes = await fetch(`./api/read?token=${encodeURIComponent(token)}`, {
+            signal: controller.signal,
+          });
           if (readRes.ok) {
             const readItems: string[] = await readRes.json();
-            setReadIds(new Set(readItems));
+            if (!cancelled) setReadIds(new Set(readItems));
           }
         }
 
@@ -42,14 +82,27 @@ export function NewsFeed() {
             document.getElementById('sources')?.scrollIntoView({ behavior: 'smooth' });
           }, 1000);
         }
+
+        if (itemsData.pendingSourceCount > 0) {
+          setRefreshing(true);
+          timeoutId = setTimeout(poll, 5000);
+        }
       } catch (e) {
-        setError(e instanceof Error ? e.message : 'Failed to load');
+        if (!cancelled) {
+          setError(e instanceof Error ? e.message : 'Failed to load');
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
 
-    fetchData();
+    initialFetch();
+
+    return () => {
+      cancelled = true;
+      if (timeoutId) clearTimeout(timeoutId);
+      abortRef.current?.abort();
+    };
   }, [token]);
 
   const markAsRead = useCallback(
@@ -124,6 +177,7 @@ export function NewsFeed() {
     <>
       <div className={styles.pre}>
         updated {formatDistanceToNow(new Date(data.generatedAt), { addSuffix: true })}
+        {refreshing && <span className={styles.spinner} />}
       </div>
 
       {sortedGroups.map(({ mainItem, additionalItems }) => {

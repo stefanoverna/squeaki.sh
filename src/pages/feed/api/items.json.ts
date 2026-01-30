@@ -135,6 +135,7 @@ export const GET: APIRoute = async ({ locals }) => {
           groupedItems: cached.groupedItems,
           erroredSources: cached.erroredSources,
           generatedAt: cached.generatedAt,
+          pendingSourceCount: sourcesNeedingUpdate.length,
         },
         null,
         2,
@@ -178,6 +179,7 @@ export const GET: APIRoute = async ({ locals }) => {
     groupedItems,
     erroredSources,
     generatedAt: updateTime,
+    pendingSourceCount: Math.max(0, allSources.length - BATCH_SIZE),
   };
 
   // Cache the result

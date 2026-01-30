@@ -28,6 +28,24 @@
   color: var(--color-txt--subtle);
 }
 
+.spinner {
+  display: inline-block;
+  width: 0.75em;
+  height: 0.75em;
+  border: 1.5px solid var(--color-txt--subtle);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+  margin-left: 0.4em;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .post ul,
 .post li {
   display: inline;
