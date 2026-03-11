@@ -1,6 +1,6 @@
 # squeaki.sh
 
-IndieWeb-powered personal blog built with Astro + DatoCMS + Cloudflare Pages. Features webmentions, RSS aggregation, newsletter subscriptions, and POSSE workflow.
+IndieWeb-powered personal blog built with Astro 6 + DatoCMS + Cloudflare Workers. Features webmentions, RSS aggregation, newsletter subscriptions, and POSSE workflow.
 
 ## Architecture
 
@@ -15,10 +15,11 @@ squeakish/
 
 ## Tech Stack
 
-**Core:** Astro 5 (SSR + Static), Preact (in compat mode), TypeScript
+**Core:** Astro 6 (SSR + Static), Preact (in compat mode), TypeScript, Node >= 22
 **Content:** DatoCMS headless CMS with GraphQL API (gql.tada for type-safe queries)
-**Hosting:** Cloudflare Pages with scheduled rebuilds (daily via GitHub Actions)
+**Hosting:** Cloudflare Workers with Workers Builds (auto-deploy from main). Scheduled rebuilds daily via GitHub Actions.
 **Services:** Postmark (newsletter), Turnstile (bot protection), webmention.io (social interactions)
+**Runtime:** Cloudflare Workers (workerd) — bindings accessed via `import { env } from 'cloudflare:workers'`
 
 ## Key Invariants
 
@@ -45,8 +46,8 @@ squeakish/
 
 ## Anti-patterns
 
-- Never hardcode API tokens - all secrets via env schema
-- Don't bypass Cloudflare adapter - serverless context required for API routes
+- Never hardcode API tokens - all secrets via env schema and `cloudflare:workers` env
+- Don't use `Astro.locals.runtime` - use `import { env } from 'cloudflare:workers'` instead
 - Never edit GraphQL schema manually - regenerate from DatoCMS
 - Don't commit .env file - use .env.example as template
 
@@ -59,7 +60,7 @@ npm run dev:wrangler     # Test with Cloudflare runtime locally
 npm run generate-schema  # Regenerate GraphQL types from DatoCMS
 ```
 
-Deployment: Cloudflare Pages auto-deploys from main branch. GitHub Actions triggers rebuilds daily at midnight UTC.
+Deployment: Cloudflare Workers auto-deploys from main branch via Workers Builds. GitHub Actions triggers rebuilds daily at midnight UTC. All PRIVATE_* secrets must be set both as Worker secrets (runtime) and as Workers Builds env vars (build-time, for workerd prerendering).
 
 ## Intent Layer
 

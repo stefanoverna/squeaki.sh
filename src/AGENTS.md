@@ -182,4 +182,4 @@ See: https://gql-tada.0no.co/get-started/writing-graphql
 - **Edge runtime for Preact:** Must use `react-dom/server.edge` (configured in astro.config.mjs:63)
 - **Draft content in dev:** `includeDrafts` is enabled in dev mode - may see unpublished posts locally
 - **Font loading for OG images:** .otf files must be loaded as Uint8Array, not via standard imports
-- **Cloudflare adapter required:** API routes depend on Cloudflare Pages context
+- **Cloudflare Workers runtime:** API routes use `import { env } from 'cloudflare:workers'` for bindings (KV, secrets). `waitUntil` via `locals.cfContext.waitUntil()`

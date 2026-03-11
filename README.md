@@ -4,7 +4,7 @@
 
 - **[Astro](https://astro.build/)** - Modern static site framework
 - **[DatoCMS](https://www.datocms.com/)** - Headless CMS for content management
-- **[Cloudflare Pages](https://pages.cloudflare.com/)** - Hosting and deployment platform
+- **[Cloudflare Workers](https://workers.cloudflare.com/)** - Hosting and deployment platform
 - **[Postmark](https://postmarkapp.com/)** - Email service for newsletter subscriptions
 - **[webmention.io](https://webmention.io/)** - Webmention receiving service
 - **[Brid.gy](https://brid.gy)** - Social media backfeeding bridge
@@ -72,7 +72,7 @@ npm run dev
 
 ### Build Process
 
-The blog is deployed to **Cloudflare Pages** with an automated build schedule:
+The blog is deployed to **Cloudflare Workers** with an automated build schedule:
 
 - **Scheduled rebuilds:** Daily (midnight UTC) via GitHub Actions to sync Mastodon URLs and update the News feed.
 - **On-demand builds:** Triggered by DatoCMS webhooks.

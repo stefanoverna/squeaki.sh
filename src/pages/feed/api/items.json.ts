@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import {
   fetchFeeds,
   fetchSources,
@@ -28,7 +29,7 @@ type CachedData = {
 };
 
 export const GET: APIRoute = async ({ locals }) => {
-  const { NEWS_KV } = locals.runtime.env;
+  const { NEWS_KV } = env;
 
   // Get all sources from DatoCMS
   const allSources = await fetchSources();
@@ -60,7 +61,7 @@ export const GET: APIRoute = async ({ locals }) => {
 
     // If any sources are stale, trigger incremental background refresh
     if (hasStaleData) {
-      locals.runtime.ctx.waitUntil(
+      locals.cfContext.waitUntil(
         (async () => {
           try {
             console.log('Background incremental refresh started');

@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { PRIVATE_NEWS_TOKEN } from 'astro:env/server';
+import { env } from 'cloudflare:workers';
 import { ErrorWithStatus, handleErrors } from '~/lib/utils/apiResponses';
 
 const MAX_READ_ITEMS = 5000;
@@ -16,11 +17,11 @@ function validateToken(request: Request): void {
   }
 }
 
-export const GET: APIRoute = async ({ request, locals }) => {
+export const GET: APIRoute = async ({ request }) => {
   try {
     validateToken(request);
 
-    const { NEWS_KV } = locals.runtime.env;
+    const { NEWS_KV } = env;
     const readItems = await NEWS_KV.get<string[]>(KV_KEY, 'json');
 
     return new Response(JSON.stringify(readItems || []), {
@@ -31,7 +32,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
   }
 };
 
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST: APIRoute = async ({ request }) => {
   try {
     validateToken(request);
 
@@ -47,7 +48,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       throw new ErrorWithStatus(422, 'Body must contain an "ids" array');
     }
 
-    const { NEWS_KV } = locals.runtime.env;
+    const { NEWS_KV } = env;
     const existingItems = (await NEWS_KV.get<string[]>(KV_KEY, 'json')) || [];
 
     // Add new IDs, avoiding duplicates

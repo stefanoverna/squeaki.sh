@@ -1,6 +1,6 @@
 name: Rebuild
 on:
-  # Triggers the workflow daily at midnight UTC
+  # Trigger daily rebuild at midnight UTC
   schedule:
     - cron: '0 0 * * *'
 
@@ -10,5 +10,10 @@ jobs:
   cron:
     runs-on: ubuntu-latest
     steps:
-      - name: Launch rebuild
-        run: curl -X POST https://api.cloudflare.com/client/v4/pages/webhooks/deploy_hooks/${{ secrets.DEPLOY_HOOK_ID }}
+      - name: Trigger Workers Build
+        run: |
+          curl -sf -X POST \
+            "https://api.cloudflare.com/client/v4/accounts/${{ secrets.CLOUDFLARE_ACCOUNT_ID }}/builds/triggers/${{ secrets.CLOUDFLARE_BUILD_TRIGGER_UUID }}/builds" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{"branch": "main"}'

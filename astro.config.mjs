@@ -44,7 +44,7 @@ export default defineConfig({
     validateSecrets: true,
   },
   integrations: [preact({ compat: true })],
-  adapter: cloudflare({ imageService: 'compile' }),
+  adapter: cloudflare(),
   security: {
     checkOrigin: false,
   },

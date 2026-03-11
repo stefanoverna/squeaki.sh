@@ -1,16 +1,12 @@
 {
   "name": "squeakish",
-  "compatibility_date": "2025-01-10",
-  "pages_build_output_dir": "./dist",
-  "kv_namespaces": [{ "binding": "NEWS_KV", "id": "3ea162ca0ff84920965c46cc172662f1" }],
-  "vars": {
-    "PRIVATE_DATOCMS_READONLY_API_TOKEN": "",
-    "PRIVATE_DATOCMS_READWRITE_API_TOKEN": "",
-    "PRIVATE_DATOCMS_BUILD_TRIGGER_WEBHOOK": "",
-    "PRIVATE_POSTMARK_SERVER_TOKEN": "",
-    "PRIVATE_POSTMARK_WEBHOOK_API_TOKEN": "",
-    "PRIVATE_NEWSLETTER_SEND_API_TOKEN": "",
-    "PRIVATE_TURNSTILE_SECRET_KEY": "",
-    "PRIVATE_NEWS_TOKEN": "",
+  "account_id": "6b92f5534b9b74625fb37000b88f734d",
+  "main": "@astrojs/cloudflare/entrypoints/server",
+  "compatibility_date": "2026-03-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist",
   },
+  "kv_namespaces": [{ "binding": "NEWS_KV", "id": "3ea162ca0ff84920965c46cc172662f1" }],
 }
