@@ -9,6 +9,8 @@ import {
 } from '../_sub/utils';
 
 const KV_KEY = 'feed-items';
+const LOCK_KEY = 'feed-refresh-lock';
+const LOCK_TTL_SECONDS = 60; // KV does not allow an expiration shorter than 60 seconds
 const CACHE_TTL_MS = 60 * 60 * 1000;
 const BATCH_SIZE = 5; // Number of feeds to update per refresh
 
@@ -59,8 +61,23 @@ export const GET: APIRoute = async ({ locals }) => {
         : 'Returning fresh cached data',
     );
 
-    // If any sources are stale, trigger incremental background refresh
+    // Only one request at a time can start a refresh. This stops parallel
+    // requests from doing the same work and going over the CPU limit.
+    // KV is not atomic, so two requests can sometimes both get the lock.
+    // This is acceptable because it only happens rarely.
+    let shouldRefresh = false;
     if (hasStaleData) {
+      const lock = await NEWS_KV.get(LOCK_KEY);
+      if (!lock) {
+        await NEWS_KV.put(LOCK_KEY, new Date().toISOString(), {
+          expirationTtl: LOCK_TTL_SECONDS,
+        });
+        shouldRefresh = true;
+      }
+    }
+
+    // If any sources are stale, trigger incremental background refresh
+    if (shouldRefresh) {
       locals.cfContext.waitUntil(
         (async () => {
           try {
