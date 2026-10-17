@@ -141,6 +141,11 @@ export const GET: APIRoute = async ({ locals }) => {
             console.log('Background incremental refresh completed');
           } catch (error) {
             console.error('Background refresh failed:', error);
+          } finally {
+            // Release the lock when the refresh ends, so the next request can
+            // start the next batch at once. If the Worker is stopped before
+            // this line, the lock TTL removes the lock.
+            await NEWS_KV.delete(LOCK_KEY);
           }
         })(),
       );
